@@ -50,6 +50,7 @@ config = {
 
 
 def resolve_path(path):
+    """把配置里的相对路径转成基于项目根目录的绝对路径。"""
     path = Path(path)
     if path.is_absolute():
         return path
@@ -57,6 +58,7 @@ def resolve_path(path):
 
 
 def load_training_sentences(config):
+    """优先读取 processed 数据；如果没有，就从 raw Europarl 目录现场构建。"""
     data_path = resolve_path(config["data_path"])
     if data_path.exists():
         return load_corpus(
@@ -76,6 +78,7 @@ def load_training_sentences(config):
 
 
 def main():
+    """完整训练入口：加载数据、建词表、建模型、训练、保存、预测样例。"""
     device = get_device()
     config["device"] = str(device)
     set_seed(config["seed"])
@@ -90,13 +93,7 @@ def main():
         val_ratio=config["val_ratio"],
         seed=config["seed"],
     )
-    print(
-        "split sizes:",
-        len(train_sentences),
-        len(val_sentences),
-        len(test_sentences),
-    )
-
+    
     word2idx, idx2word = build_vocab(train_sentences, min_freq=config["min_freq"])
     vocab_path = resolve_path(config["vocab_path"])
     save_vocab(word2idx, idx2word, str(vocab_path))

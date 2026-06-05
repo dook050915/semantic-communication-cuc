@@ -16,6 +16,7 @@ config = {
 
 
 def resolve_path(path):
+    """把配置里的相对路径转成基于项目根目录的绝对路径。"""
     path = Path(path)
     if path.is_absolute():
         return path
@@ -23,6 +24,7 @@ def resolve_path(path):
 
 
 def main():
+    """从 Europarl 原始目录抽取句子，并保存成 processed 文本文件。"""
     raw_data_dir = resolve_path(config["raw_data_dir"])
     output_path = resolve_path(config["output_path"])
 
