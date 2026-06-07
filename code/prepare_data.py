@@ -8,10 +8,10 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 config = {
     "raw_data_dir": "code/data/raw/europarl-v7/txt/en",
-    "output_path": "code/data/processed/europarl_en_20k.txt",
+    "output_path": "code/data/processed/europarl_en_50k.txt",
     "min_len": 4,
     "max_len": 30,
-    "max_sentences": 20000,
+    "max_sentences": 50000,
 }
 
 
