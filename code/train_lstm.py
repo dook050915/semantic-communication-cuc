@@ -29,9 +29,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 config = {
     "seed": 42,
-    "data_path": "code/data/processed/europarl_en_20k.txt",
+    "data_path": "code/data/processed/europarl_en_50k.txt",
     "raw_data_dir": "code/data/raw/europarl-v7/txt/en",
-    "max_sentences": 20000,
+    "max_sentences": 50000,
     "min_len": 4,
     "max_len": 30,
     "min_freq": 2,
@@ -43,9 +43,9 @@ config = {
     "batch_size": 96,
     "lr": 1e-3,
     "epochs": 20,
-    "vocab_path": "experiments/lstm_noiseless_20k/vocab.json",
-    "checkpoint_path": "experiments/lstm_noiseless_20k/checkpoint_epoch20.pt",
-    "best_checkpoint_path": "experiments/lstm_noiseless_20k/checkpoint_best.pt",
+    "vocab_path": "experiments/lstm_noiseless_50k_h256/vocab.json",
+    "checkpoint_path": "experiments/lstm_noiseless_50k_h256/checkpoint_epoch20.pt",
+    "best_checkpoint_path": "experiments/lstm_noiseless_50k_h256/checkpoint_best.pt",
 }
 
 
