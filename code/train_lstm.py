@@ -29,7 +29,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 config = {
     "seed": 42,
-    "data_path": "code/data/processed/europarl_en_50k.txt",
+    "data_path": "data/processed/europarl_en_50k.txt",
     "raw_data_dir": "code/data/raw/europarl-v7/txt/en",
     "max_sentences": 50000,
     "min_len": 4,
