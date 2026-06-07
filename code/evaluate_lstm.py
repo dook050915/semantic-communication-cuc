@@ -98,8 +98,8 @@ def main():
     device = get_device()
     eval_config = config.copy()
     set_seed(eval_config["seed"])
-    eval_config['results_path'] = "experiments/lstm_noiseless_50k_h256/results.json"
-    eval_config['prediction_samples_path'] = "experiments/lstm_noiseless_50k_h256/prediction_samples.txt"
+    eval_config['results_path'] = "experiments/lstm_noiseless_50k_h512/results.json"
+    eval_config['prediction_samples_path'] = "experiments/lstm_noiseless_50k_h512/prediction_samples.txt"
     eval_config['max_samples'] = 100
 
     sentences = load_training_sentences(eval_config)
