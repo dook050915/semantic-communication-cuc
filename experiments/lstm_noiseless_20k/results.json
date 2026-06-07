@@ -1,6 +1,7 @@
 {
   "checkpoint_epoch": 17,
   "checkpoint_val_loss": 2.8218543983641124,
+  "train_loss_best": 1.7667333501541687,
   "test_loss": 2.751244272504534,
   "test_bleu": 0.24075790409010542,
   "num_test_sentences": 2000,
