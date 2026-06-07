@@ -124,7 +124,7 @@ def main():
     checkpoint = load_checkpoint(model, None, str(best_ckpt_path), map_location=str(device))
     print(f"epoch: {checkpoint['epoch']}")
     print(f"val_loss: {checkpoint['val_loss']:.4f}")
-
+    print(f"train_loss_best: {checkpoint['train_loss']:.4f}")
     test_loss = evaluate_loss(model, test_loader, criterion, device)
 
     references = []
@@ -140,6 +140,7 @@ def main():
     results = {
         'checkpoint_epoch': checkpoint['epoch'],
         'checkpoint_val_loss': checkpoint['val_loss'],
+        'train_loss_best': checkpoint['train_loss'],
         'test_loss': test_loss,
         'test_bleu': test_bleu,
         'num_test_sentences': len(test_sentences),
