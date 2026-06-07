@@ -1,0 +1,400 @@
+sample 1
+reference: we chose to vote in favour of amendments nos 76 and 19 and against, for example, amendments nos 5 and 7.
+prediction: we want to vote in favour of amendments nos and for amendments nos and 40 lapse, and we will support tomorrow.
+==================================================
+sample 2
+reference: fire-fighters who indulge in arson do not deserve our trust.
+prediction: <UNK> who do not <UNK> in our <UNK> friends on.
+==================================================
+sample 3
+reference: the vote on the approval of the commission will take place tomorrow at 11 a.m.
+prediction: the vote on the commission will take place of the previous sitting tomorrow at 11 a.m.
+==================================================
+sample 4
+reference: – thank you for being so understanding, mrfabra vallés. we have to stick to very strict timetables.
+prediction: – thank you for being <UNK> to commissioner patten so that we have <UNK> to be <UNK>
+==================================================
+sample 5
+reference: · thirdly, there must be no more discussion of declassification of forest land, because this simply plays into the hands of anyone inclined to commit arson;
+prediction: lastly, there must be no more of eur 1 000 <UNK> of us to find out that the recent <UNK> in any case of this <UNK>
+==================================================
+sample 6
+reference: visa requirements between russia and georgia
+prediction: works councils between men and vegetables
+==================================================
+sample 7
+reference: mr president, the situation in mauritania is actually getting worse and worse.
+prediction: mr president, the situation in zimbabwe is already in brussels and practical.
+==================================================
+sample 8
+reference: the debate is closed.
+prediction: the debate is closed.
+==================================================
+sample 9
+reference: secondly, we have to agree on the circumstances in which we can best and most effectively contribute to meeting those needs.
+prediction: secondly, we have to see in the <UNK> which we can agree to discuss these two aspects, and our community policies.
+==================================================
+sample 10
+reference: can the commission confirm whether it does in fact take this approach when considering government aid granted to the film and audiovisual industries?
+prediction: does the commission can expect anything in fact that it was necessary to this compromise can be accepted in the eu and <UNK>
+==================================================
+sample 11
+reference: questions to mr liikanen
+prediction: questions to mr liikanen
+==================================================
+sample 12
+reference: that concludes this item.
+prediction: that concludes this item.
+==================================================
+sample 13
+reference: mr president, amendment no 206 is not rendered redundant by the adoption of the previous amendment. therefore, we need to vote on amendment no 206.
+prediction: mr president, no amendment is not being put by the president-in-office of the council propose to amendment no 6 by mr barón crespo to the commission.
+==================================================
+sample 14
+reference: the next item is the report by mr oostlander on turkey's application for membership of the european union.
+prediction: the next item is the report by mr von wogau, for an opinion on the basis of european
+==================================================
+sample 15
+reference: while the different community policies allow these bottlenecks, there is little or nothing we can do to create cohesive transport and intermodality from social and environmental points of view.
+prediction: while the current tax such eu or <UNK> these is needed or it is necessary to achieve and better cooperation with respect for human rights and of these developments.
+==================================================
+sample 16
+reference: but he shared our concerns about the zimbabwe regime, which has destroyed a once-vibrant economy, oppressed its people and polluted the relationship between africa and the european union.
+prediction: but about an excellent work, but the commission has a <UNK> economic and social cohesion which should also be the continuing to create a <UNK> <UNK> and <UNK>
+==================================================
+sample 17
+reference: we find this unacceptable.
+prediction: we reject this regulation.
+==================================================
+sample 18
+reference: the next item is the report by mrs klaß on behalf of the parliament and council delegation to the conciliation committee on the protection of groundwater against pollution
+prediction: the next item is the report by mrs záborská, on behalf of the committee on constitutional affairs, and the council to deal with the adoption of the european council.
+==================================================
+sample 19
+reference: mr president, in view of the short time available, i will address the most important point first.
+prediction: mr president, in light of the time i am very grateful about the commission document, as follows:
+==================================================
+sample 20
+reference: the agreement was concluded in 2004, and, in the meantime, romania and bulgaria, both situated at the european union border, have become member states.
+prediction: the agreement in turkey was in <UNK> the member states and therefore believe that the european union had more active participation in the <UNK>
+==================================================
+sample 21
+reference: question no 31 by (h-0482/00):
+prediction: question no 31 by <UNK>
+==================================================
+sample 22
+reference: the debate is closed.
+prediction: the debate is closed.
+==================================================
+sample 23
+reference: substances having a hormonal or thyrostatic action and of beta-agonists
+prediction: a second <UNK> action plan and <UNK> of <UNK> .
+==================================================
+sample 24
+reference: the vote will take place on thursday.
+prediction: the vote will take place on thursday.
+==================================================
+sample 25
+reference: the vote will take place tomorrow at 11.30 a.m.
+prediction: the vote will take place tomorrow at 11.30 a.m.
+==================================================
+sample 26
+reference: 3. development of the community's railways (vote)
+prediction: 3. financing of the development strategy (vote)
+==================================================
+sample 27
+reference: . (pt) i have voted in favour of the report, and welcome the initiative by the committee on employment and social affairs.
+prediction: . (pt) i have voted in favour of the report by the committee on economic and monetary affairs as the conciliation procedure.
+==================================================
+sample 28
+reference: one needs to keep in mind that johannesburg was a un conference. this means delegations must reach consensus. not everybody gets everything.
+prediction: one other words, if he said to say that europe should not be a <UNK> for small businesses in this area. imports.
+==================================================
+sample 29
+reference: between 2007 and 2009 it will be 56 hours;
+prediction: and rural development will be accepted two years <UNK>
+==================================================
+sample 30
+reference: progress of the 12 candidate countries in 2000 (continuation)
+prediction: progress of the current situation in brussels 2000 (continuation)
+==================================================
+sample 31
+reference: to respond to our citizens' demands, we had advocated a double majority as the only solution which is objective, comprehensible and widely supported by smaller and larger countries alike.
+prediction: to end to our differences, we fully understand a significant step, and which the eu must not hesitate as an <UNK> for example, is one of time and necessary.
+==================================================
+sample 32
+reference: with regard to paragraph 38:
+prediction: with regard to <UNK> relations.
+==================================================
+sample 33
+reference: opening of the sitting
+prediction: opening of the sitting
+==================================================
+sample 34
+reference: the debate is closed.
+prediction: the debate is closed.
+==================================================
+sample 35
+reference: i believe that, in terms of applying cuts, the efforts of the council are quite sufficient, since it is a great specialist in that area.
+prediction: i believe that, in spite of <UNK> but the first of the <UNK> i would like to highlight a very important situation in gaza. time.
+==================================================
+sample 36
+reference: as usual, i have three points:
+prediction: as i have received three points:
+==================================================
+sample 37
+reference: vat - direct and indirect taxation
+prediction: - and rural development - (pl)
+==================================================
+sample 38
+reference: whether what was said was 'useful' or 'useless' idiot is scarcely relevant. i know. i have read as much lenin as you, mr martinez
+prediction: what was said said <UNK> <UNK> or even though i think this is <UNK> as a result as we can see what i said.
+==================================================
+sample 39
+reference: thank you, commissioner fischler.
+prediction: thank you, commissioner fischler.
+==================================================
+sample 40
+reference: mr president, i would like to compliment mrs maij-weggen on her excellent report, and thank her for the pleasant cooperation we have had.
+prediction: mr president, i would like to mrs lalumière on behalf of this excellent report, and thank the rapporteur for their <UNK> work. i abstained.
+==================================================
+sample 41
+reference: the commission communication is an acknowledgement that concrete measures need to be taken to create a genuinely european and highly liquid risk capital market in the eu.
+prediction: the commission is an essential that principle to be adopted a european union and to what extent could be possible in relation to the eu as <UNK>
+==================================================
+sample 42
+reference: following consultations with the council and in cooperation with the shadow rapporteurs, a package of amendments was proposed, which has been endorsed by most of the political groups.
+prediction: following parliament with the council and its position with the commission in which have a serious issue of us and on the two concepts problems faced with it.
+==================================================
+sample 43
+reference: there you are. this is an example of what i hope will not happen when this document is implemented.
+prediction: there is something about this issue but also of what i am not going to be sure that correctly.
+==================================================
+sample 44
+reference: motion for a resolution (b5-0341/2001) on the report on the future objectives of education and training systems
+prediction: motion for a resolution <UNK> on the report on the future of international trade and consumer protection.
+==================================================
+sample 45
+reference: the debate is closed.
+prediction: the debate is closed.
+==================================================
+sample 46
+reference: the debate is closed.
+prediction: the debate is closed.
+==================================================
+sample 47
+reference: – mr president, ladies and gentlemen, once again we are addressing a topic that is important for truly creating the internal market.
+prediction: – mr president, ladies and gentlemen, commissioner, as well that we are a real opportunity for ensuring that the european union is
+==================================================
+sample 48
+reference: this is the question we have to answer.
+prediction: this is the question we have to respond.
+==================================================
+sample 49
+reference: the vote will take place tomorrow at 12 noon.
+prediction: the vote will take place tomorrow at 12 noon.
+==================================================
+sample 50
+reference: it is this delegation's view that the amendment is incompatible with the statutes currently in force, for which reason we have felt obliged to vote against it.
+prediction: it is this <UNK> amendment that the council is for <UNK> the budget of which we can only be looking forward with this financial perspective in question.
+==================================================
+sample 51
+reference: this very afternoon we have had a debate on workers who suddenly find themselves unemployed. we now hope to be able to solve these problems.
+prediction: this very much we have now been a debate on <UNK> we are going to keep up with these issues, which i will be abstaining.
+==================================================
+sample 52
+reference: the debate is closed.
+prediction: the debate is closed.
+==================================================
+sample 53
+reference: the rapporteur proposes a series of objectives which we agree with and which must be taken into account in future decisions.
+prediction: the rapporteur which a series of which concerns amendments which we must be dealt with and effective and in future terms.
+==================================================
+sample 54
+reference: the debate is closed.
+prediction: the debate is closed.
+==================================================
+sample 55
+reference: that was all i was able to convey, focusing on two issues to which the house has devoted a good deal of political energy and debate.
+prediction: that was all was to <UNK> i <UNK> but i would like to ask the european parliament's preliminary conference of presidents which will be taken on
+==================================================
+sample 56
+reference: c) on the safety of transport by sea and the environment, due to the generally lower standard of services provided.
+prediction: c) by means of the new information on human rights and the internal market to the republic of cyprus;
+==================================================
+sample 57
+reference: furthermore, the artificial refilling of aquifers is not considered either, despite the fact that this is an essential phenomenon.
+prediction: furthermore, the <UNK> <UNK> of us is not <UNK> that the eu is very bad news for several reasons.
+==================================================
+sample 58
+reference: the commission remains committed to the eu perspective on the western balkans. i am sure that i can count on your support in this very important endeavour.
+prediction: the commission has given the responsibility to the commission on two aspects, i can only assume that these disasters and take them in a few years ago.
+==================================================
+sample 59
+reference: especially as the proposal divides this twelve year period into several distinct periods, each with their own rules for the maximum working week:
+prediction: secondly: over the <UNK> s environment are not <UNK> this year, both from both sides and no knowledge of the eu <UNK> <UNK>
+==================================================
+sample 60
+reference: the gothenburg council should therefore note our progress and lay down the necessary guidelines for completing the negotiations.
+prediction: the council should therefore vote against our work and work programme for the benefit of the new presidency.
+==================================================
+sample 61
+reference: mr president, trying to block or limit information to patients ties in very poorly with the principles of transparency in modern healthcare.
+prediction: mr president, to sum up to increase human rights in order to restore democratic relations between the united nations - following <UNK>
+==================================================
+sample 62
+reference: the vote will take place tomorrow at noon.
+prediction: the vote will take place tomorrow at noon.
+==================================================
+sample 63
+reference: in any event, i would like to ask you to explain why this discrimination has taken place, mr president.
+prediction: in any event, i would like to ask you to do this question and has been voted for it.
+==================================================
+sample 64
+reference: this is why i hope, ladies and gentlemen, that this evening you will support these amendments, which i think are both realistic and responsible.
+prediction: this is why i also welcome your remarks, and this house and hope that you will find our time when i put forward together?
+==================================================
+sample 65
+reference: amendments 7, 38 and 39 are also unacceptable, because the initial text contains a practical method for calculating the amount of money required.
+prediction: amendments nos 7, 8, 9, 12, 13, and would the first part of the common agricultural industry for a very difficult issue. ...
+==================================================
+sample 66
+reference: mr president, we are in favour of this oral amendment, albeit as a supplementary amendment. we definitely want to retain our amendment no 12.
+prediction: mr president, we are in favour of this report, as we are unable to support a compromise amendment no later in this regard. it.
+==================================================
+sample 67
+reference: a new round of broad-based negotiations must enable progress to be made in the further liberation and regulation of world trade, which is vital for a variety of reasons.
+prediction: a new <UNK> of a resolution is to be welcomed, preserved and in particular the number of deaths will therefore go by means of the financial perspective for europe.
+==================================================
+sample 68
+reference: i should like to thank commissioner špidla for reminding us that we should incorporate anti-exclusion measures into greece's plan of action.
+prediction: i should like to thank commissioner for that we should not be <UNK> any other <UNK> as we need to succeed.
+==================================================
+sample 69
+reference: on amendments nos 2, 3, 6, 10 and 12, the commission considers that the content of these amendments is already covered by the common position.
+prediction: following on amendments nos 1, 4, 5, 6, 7, the commission and the commission have taken place measures of the current situation that are limited.
+==================================================
+sample 70
+reference: mr president, i too should like to welcome the mccartney family members to the chamber. i salute their courage and bravery in endeavouring to get justice for their brother.
+prediction: mr president, i too should like to welcome the members to the other <UNK> i am asking their presence and in particular for their <UNK> to <UNK> this issue.
+==================================================
+sample 71
+reference: b5-0931/2000 by van den bos and dybkjær, on behalf of the eldr group,
+prediction: <UNK> by van den bos and dybkjær, on behalf of the eldr group,
+==================================================
+sample 72
+reference: b5­0072/2001 by mr van orden, on behalf of the group of the european people' s party (christian democrats) and european democrats, on the situation in turkish prisons;
+prediction: <UNK> by mr van den berg, on behalf of the group of the european people' s party (christian democrats) and european democrats, on the situation in <UNK>
+==================================================
+sample 73
+reference: in the event of new scientific data coming to light, the commission would of course be prepared to take any necessary measures in response.
+prediction: in the field of order would like to emphasise the principle of subsidiarity - following decisions to be accepted as they can therefore be taken.
+==================================================
+sample 74
+reference: along with mr bakopoulos, i welcome the european commission' s proposals, which serve to improve the community maritime safety policy.
+prediction: with president prodi welcome mr <UNK> i the european parliament to bring about its cooperation between the eu and india.
+==================================================
+sample 75
+reference: we should also thank germany for being a great host and providing a great team.
+prediction: we also should like, for a joint resolution because i am concerned about its people.
+==================================================
+sample 76
+reference: the debate is closed.
+prediction: the debate is closed.
+==================================================
+sample 77
+reference: torres marques report (a5-0366/2000)
+prediction: von wogau report <UNK>
+==================================================
+sample 78
+reference: my approval therefore clearly does not apply to the references to decoupling and to rural development contained in the garot report.
+prediction: why does not allow me, myself to the measures to address and the charter of fundamental rights following a resolution.
+==================================================
+sample 79
+reference: question no 39 by (h-0249/01):
+prediction: question no 39 by <UNK>
+==================================================
+sample 80
+reference: our view is that the eu should not revise the swedish people’s opinion by adopting a position for or against a possible opt-out clause.
+prediction: our view that is the eu should not detract the possibility for a directive or a new directive or by voting against these reports.
+==================================================
+sample 81
+reference: we hope that the success of the new programme will safeguard the viability of the programmes once their funding ends and that we shall thus be able to ...
+prediction: we hope that the new member states of the new member states will take the right to the many of our citizens and we can make this very clear.
+==================================================
+sample 82
+reference: report (a5-0200/2002) by karl erik olsson, on behalf of the committee on agriculture and rural development, on enlargement and agriculture: successfully integrating the new member states into the cap (2002/2059(ini));
+prediction: report <UNK> by <UNK> gill, on behalf of the committee on agriculture and rural development, on <UNK> and <UNK> the new directive is fully <UNK> for the current situation of <UNK>
+==================================================
+sample 83
+reference: the debate is closed.
+prediction: the debate is closed.
+==================================================
+sample 84
+reference: on behalf of the ppe-de group. - mr president, i wish to thank the rapporteur for her work on this report and the commission for its contribution this evening.
+prediction: on behalf of the ppe-de group. - mr president, i wish to thank the rapporteur for her cooperation and this report on the work for this report is so.
+==================================================
+sample 85
+reference: . (fr) indeed, mrs kinnock, sweden is also going to organise a conference on refugee children in stockholm in the spring of 2001.
+prediction: . (fr) indeed, mrs maes, is also going to say a statement on homophobia in terms of the energy policy in his country.
+==================================================
+sample 86
+reference: the next item is the one-minute speeches on matters of political importance.
+prediction: the next item is the one-minute speeches on matters of political importance.
+==================================================
+sample 87
+reference: the debate is closed.
+prediction: the debate is closed.
+==================================================
+sample 88
+reference: b5-0556/2002 by mr van den bos, on behalf of the eldr group, on iran;
+prediction: <UNK> by mr van den bos, on behalf of the eldr group, on burma;
+==================================================
+sample 89
+reference: the council statement on the position of the european union on developments concerning cyprus;
+prediction: the council statement on the future of the common position on two fundamental issues:
+==================================================
+sample 90
+reference: – the debate is closed.
+prediction: – the debate is closed.
+==================================================
+sample 91
+reference: the next item is the debate on six motions for resolutions on the humanitarian situation of refugees from iraq.
+prediction: the next item is the debate on six motions for resolutions on the situation of yugoslavia from yugoslavia (vote)
+==================================================
+sample 92
+reference: will the commission take action to prevent stun weapon manufacturers using ce markings to promote the sales of their products?
+prediction: will the commission take action to <UNK> companies through their own <UNK> to prevent the protection of agricultural products ...
+==================================================
+sample 93
+reference: situation in bosnia/herzegovina, particularly banya luka
+prediction: situation in <UNK> <UNK> was <UNK>
+==================================================
+sample 94
+reference: – ladies and gentlemen, we shall now proceed to the explanations of vote.
+prediction: – we shall now move on behalf of the request and we shall
+==================================================
+sample 95
+reference: question no 3 by brian crowley (h-0172/02):
+prediction: question no 3 by josu ortuondo <UNK>
+==================================================
+sample 96
+reference: we accept the need for the requirements relating to specific substances – that is, minerals, ores, ore concentrates and chemicals occurring in nature – to be expressed with greater clarity.
+prediction: we deplore the need for the need to increase <UNK> in <UNK> caravans with this area and <UNK> million must be provided for that they are not to <UNK> investment.
+==================================================
+sample 97
+reference: the fight against terrorism plays a vital role, and this is the way it has to be. incidentally, in future, if the framework agreement is implemented, we will have ...
+prediction: the fight against terrorism <UNK> the fight against terrorism is a good and not only the way we must make it clear this is a matter for the other stakeholders.
+==================================================
+sample 98
+reference: the requirement of unanimity should not, as proposed in the opinion, be generally abolished in the cases of foreign and security policy and tax policy.
+prediction: the conclusion of the charter should as we see an increase in cyprus and would be the <UNK> in other areas of this fisheries fund.
+==================================================
+sample 99
+reference: for all these reasons, we shall vote against this report.
+prediction: for all these reasons, we shall vote against this report.
+==================================================
+sample 100
+reference: mr president, i wish to begin by thanking the house for this debate and members for their comments.
+prediction: mr president, i wish to begin by thanking the house for their contributions and this parliament for debate.
+==================================================

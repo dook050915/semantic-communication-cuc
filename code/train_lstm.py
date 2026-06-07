@@ -30,7 +30,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 config = {
     "seed": 42,
     "data_path": "data/processed/europarl_en_50k.txt",
-    "raw_data_dir": "code/data/raw/europarl-v7/txt/en",
+    "raw_data_dir": "data/raw/europarl-v7/txt/en",
     "max_sentences": 50000,
     "min_len": 4,
     "max_len": 30,
@@ -38,14 +38,14 @@ config = {
     "train_ratio": 0.8,
     "val_ratio": 0.1,
     "embed_dim": 128,
-    "hidden_dim": 256,
+    "hidden_dim": 512,
     "num_layers": 1,
     "batch_size": 96,
     "lr": 1e-3,
     "epochs": 20,
-    "vocab_path": "experiments/lstm_noiseless_50k_h256/vocab.json",
-    "checkpoint_path": "experiments/lstm_noiseless_50k_h256/checkpoint_epoch20.pt",
-    "best_checkpoint_path": "experiments/lstm_noiseless_50k_h256/checkpoint_best.pt",
+    "vocab_path": "experiments/lstm_noiseless_50k_h512/vocab.json",
+    "checkpoint_path": "experiments/lstm_noiseless_50k_h512/checkpoint_epoch20.pt",
+    "best_checkpoint_path": "experiments/lstm_noiseless_50k_h512/checkpoint_best.pt",
 }
 
 

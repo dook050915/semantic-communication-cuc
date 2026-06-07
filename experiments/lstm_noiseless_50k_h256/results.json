@@ -1,0 +1,31 @@
+{
+  "checkpoint_epoch": 14,
+  "checkpoint_val_loss": 2.6322109789218544,
+  "train_loss_best": 1.6083555012869892,
+  "test_loss": 2.6157485291642963,
+  "test_bleu": 0.25693516554364604,
+  "num_test_sentences": 5000,
+  "eval_config": {
+    "seed": 42,
+    "data_path": "data/processed/europarl_en_50k.txt",
+    "raw_data_dir": "code/data/raw/europarl-v7/txt/en",
+    "max_sentences": 50000,
+    "min_len": 4,
+    "max_len": 30,
+    "min_freq": 2,
+    "train_ratio": 0.8,
+    "val_ratio": 0.1,
+    "embed_dim": 128,
+    "hidden_dim": 256,
+    "num_layers": 1,
+    "batch_size": 96,
+    "lr": 0.001,
+    "epochs": 20,
+    "vocab_path": "experiments/lstm_noiseless_50k_h256/vocab.json",
+    "checkpoint_path": "experiments/lstm_noiseless_50k_h256/checkpoint_epoch20.pt",
+    "best_checkpoint_path": "experiments/lstm_noiseless_50k_h256/checkpoint_best.pt",
+    "results_path": "experiments/lstm_noiseless_50k_h256/results.json",
+    "prediction_samples_path": "experiments/lstm_noiseless_50k_h256/prediction_samples.txt",
+    "max_samples": 100
+  }
+}
