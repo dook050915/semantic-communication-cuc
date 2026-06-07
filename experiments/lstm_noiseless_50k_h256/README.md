@@ -109,10 +109,12 @@ mr president, the situation in zimbabwe is already in brussels and practical.
 
 ## 下一步
 
-在相同 50k 数据上增大模型容量，继续测试：
+在相同 50k 数据上增大模型容量，继续测试的实验已经完成：
 
 ```text
 lstm_noiseless_50k_h512
 ```
 
-如果 hidden_dim=512 能带来更明显的 BLEU 提升，说明当前瓶颈部分来自模型容量；如果提升仍然有限，则后续应重点考虑 attention、Transformer 或更好的词表/解码策略。
+hidden_dim=512 带来了进一步的 test loss 和 BLEU 改善，说明当前瓶颈部分来自模型容量。
+
+下一步将从无噪声重构转向语义通信链路，在 Encoder 输出的语义状态上加入 AWGN channel，观察不同 SNR 下的 test loss 和 BLEU 变化。
