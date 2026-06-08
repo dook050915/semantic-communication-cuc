@@ -47,9 +47,10 @@ config = {
     "use_channel":True,
     "channel_type":"AWGN",
     "snr_db":10,
-    "vocab_path": "experiments/lstm_awgn_50k_h512_snr10/vocab.json",
-    "checkpoint_path": "experiments/lstm_awgn_50k_h512_snr10/checkpoint_epoch20.pt",
-    "best_checkpoint_path": "experiments/lstm_awgn_50k_h512_snr10/checkpoint_best.pt",
+    "snr_list":[-10, -5, 0, 5, 10, 15, 20],
+    "vocab_path": "experiments/lstm_awgn_50k_h512_multi_snr/vocab.json",
+    "checkpoint_path": "experiments/lstm_awgn_50k_h512_multi_snr/checkpoint_epoch20.pt",
+    "best_checkpoint_path": "experiments/lstm_awgn_50k_h512_multi_snr/checkpoint_best.pt",
 }
 
 
@@ -151,7 +152,7 @@ def main():
     best_checkpoint_path = resolve_path(config["best_checkpoint_path"])
 
     for epoch in range(config["epochs"]):
-        train_loss = train_one_epoch(model, train_loader, criterion, optimizer, device,config["snr_db"])
+        train_loss = train_one_epoch(model, train_loader, criterion, optimizer, device,config["snr_db"],config["snr_list"])
         train_eval_loss = evaluate_loss(model, train_loader, criterion, device,config["snr_db"])
         val_loss = evaluate_loss(model, val_loader, criterion, device,config["snr_db"])
 

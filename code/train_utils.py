@@ -20,7 +20,7 @@ def get_device():
     return torch.device("cpu")
 
 
-def train_one_epoch(model, loader, criterion, optimizer, device, snr_db=None):
+def train_one_epoch(model, loader, criterion, optimizer, device, snr_db=None,snr_list=None):
     """训练一个 epoch：前向、算 loss、反向传播、更新参数。
 
     batch_ids: [batch_size, seq_len]
@@ -37,7 +37,10 @@ def train_one_epoch(model, loader, criterion, optimizer, device, snr_db=None):
         batch_lengths = batch_lengths.cpu()
 
         optimizer.zero_grad()
-        logits, target = model(batch_ids, batch_lengths, snr_db=snr_db)
+        if snr_list is None:
+            logits, target = model(batch_ids, batch_lengths, snr_db=snr_db)
+        else:
+            logits, target = model(batch_ids, batch_lengths, snr_db=random.choice(snr_list))
 
         vocab_size = logits.shape[-1]
         logits_flat = logits.reshape(-1, vocab_size)
