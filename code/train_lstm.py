@@ -3,6 +3,7 @@ from pathlib import Path
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
+from channel import channel_types
 
 from data_utils import (
     TextDataset,
@@ -43,9 +44,12 @@ config = {
     "batch_size": 96,
     "lr": 1e-3,
     "epochs": 20,
-    "vocab_path": "experiments/lstm_noiseless_50k_h512/vocab.json",
-    "checkpoint_path": "experiments/lstm_noiseless_50k_h512/checkpoint_epoch20.pt",
-    "best_checkpoint_path": "experiments/lstm_noiseless_50k_h512/checkpoint_best.pt",
+    "use_channel":True,
+    "channel_type":"AWGN",
+    "snr_db":10,
+    "vocab_path": "experiments/lstm_awgn_50k_h512_snr10/vocab.json",
+    "checkpoint_path": "experiments/lstm_awgn_50k_h512_snr10/checkpoint_epoch20.pt",
+    "best_checkpoint_path": "experiments/lstm_awgn_50k_h512_snr10/checkpoint_best.pt",
 }
 
 
@@ -84,6 +88,11 @@ def main():
     set_seed(config["seed"])
     print("device:", device)
 
+    if config["use_channel"]:
+        channel = channel_types[config["channel_type"]]()
+    else:
+        channel = None
+    
     sentences = load_training_sentences(config)
     print("num sentences:", len(sentences))
 
@@ -133,7 +142,7 @@ def main():
         num_layers=config["num_layers"],
         pad_idx=pad_idx,
     )
-    model = Seq2Seq(encoder, decoder).to(device)
+    model = Seq2Seq(encoder, decoder,channel=channel).to(device)
 
     criterion = nn.CrossEntropyLoss(ignore_index=pad_idx)
     optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"])
@@ -142,9 +151,9 @@ def main():
     best_checkpoint_path = resolve_path(config["best_checkpoint_path"])
 
     for epoch in range(config["epochs"]):
-        train_loss = train_one_epoch(model, train_loader, criterion, optimizer, device)
-        train_eval_loss = evaluate_loss(model, train_loader, criterion, device)
-        val_loss = evaluate_loss(model, val_loader, criterion, device)
+        train_loss = train_one_epoch(model, train_loader, criterion, optimizer, device,config["snr_db"])
+        train_eval_loss = evaluate_loss(model, train_loader, criterion, device,config["snr_db"])
+        val_loss = evaluate_loss(model, val_loader, criterion, device,config["snr_db"])
 
         if val_loss < best_val_loss:
             best_val_loss = val_loss
@@ -180,7 +189,7 @@ def main():
 
     print("\nGreedy decode samples:")
     for sentence in train_sentences[:3]:
-        pred = greedy_decode(model, sentence, word2idx, idx2word, max_len=32)
+        pred = greedy_decode(model, sentence, word2idx, idx2word, max_len=32,snr_db=config["snr_db"])
         print("src :", sentence)
         print("pred:", pred)
         print()

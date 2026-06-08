@@ -3,7 +3,6 @@ import random
 import torch
 from data_utils import decode, encode
 
-
 def set_seed(seed=42):
     """固定随机种子，让数据打乱和模型初始化尽量可复现。"""
     random.seed(seed)
@@ -21,7 +20,7 @@ def get_device():
     return torch.device("cpu")
 
 
-def train_one_epoch(model, loader, criterion, optimizer, device):
+def train_one_epoch(model, loader, criterion, optimizer, device, snr_db=None):
     """训练一个 epoch：前向、算 loss、反向传播、更新参数。
 
     batch_ids: [batch_size, seq_len]
@@ -38,7 +37,7 @@ def train_one_epoch(model, loader, criterion, optimizer, device):
         batch_lengths = batch_lengths.cpu()
 
         optimizer.zero_grad()
-        logits, target = model(batch_ids, batch_lengths)
+        logits, target = model(batch_ids, batch_lengths, snr_db=snr_db)
 
         vocab_size = logits.shape[-1]
         logits_flat = logits.reshape(-1, vocab_size)
@@ -53,7 +52,7 @@ def train_one_epoch(model, loader, criterion, optimizer, device):
     return total_loss / len(loader)
 
 
-def evaluate_loss(model, loader, criterion, device):
+def evaluate_loss(model, loader, criterion, device, snr_db=None):
     """在不更新参数的情况下计算平均 loss，用于 train eval 或 val。
 
     形状变化和 train_one_epoch 相同，只是不做 backward 和 optimizer.step。
@@ -66,7 +65,7 @@ def evaluate_loss(model, loader, criterion, device):
             batch_ids = batch_ids.to(device)
             batch_lengths = batch_lengths.cpu()
 
-            logits, target = model(batch_ids, batch_lengths)
+            logits, target = model(batch_ids, batch_lengths, snr_db=snr_db)
             vocab_size = logits.shape[-1]
             logits_flat = logits.reshape(-1, vocab_size)
             target_flat = target.reshape(-1)
@@ -77,7 +76,7 @@ def evaluate_loss(model, loader, criterion, device):
     return total_loss / len(loader)
 
 
-def greedy_decode(model, sentence, word2idx, idx2word, max_len=32):
+def greedy_decode(model, sentence, word2idx, idx2word, max_len=32, snr_db=None):
     """用贪心策略推理：每一步选择概率最高的 token 作为下一个词。
 
     编码后:
@@ -99,12 +98,15 @@ def greedy_decode(model, sentence, word2idx, idx2word, max_len=32):
 
     with torch.no_grad():
         hidden, cell = model.encoder(src_ids, src_lengths)
+        if model.channel is not None:
+            hidden = model.channel(hidden, snr_db=snr_db)
         decoder_input = torch.tensor(
             [[word2idx["<SOS>"]]], dtype=torch.long, device=device
         )
         generated_ids = []
 
         for _ in range(max_len):
+            
             logits, (hidden, cell) = model.decoder(decoder_input, hidden, cell)
             next_id = logits[:, -1, :].argmax().item()
 

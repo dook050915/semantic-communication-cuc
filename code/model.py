@@ -84,17 +84,18 @@ class Decoder(nn.Module):
 
 
 class Seq2Seq(nn.Module):
-    """完整自编码模型：Encoder 读原句，Decoder 重构原句。"""
+    """完整 Seq2Seq 模型：Encoder 读原句，可选信道扰动 hidden，Decoder 重构原句。"""
 
-    def __init__(self, encoder, decoder):
+    def __init__(self, encoder, decoder, channel=None):
         """把已经定义好的 encoder 和 decoder 组合起来。"""
         super().__init__()
         self.encoder = encoder
         self.decoder = decoder
+        self.channel = channel
 
-    def forward(self, src_ids, src_lengths):
+    def forward(self, src_ids, src_lengths, snr_db=None):
         """训练时使用 teacher forcing，返回 logits 和右移后的 target。
-
+            snr_db: AWGN 信道的信噪比；channel=None 时不使用
         输入:
             src_ids: [batch_size, seq_len]
             src_lengths: [batch_size]
@@ -104,8 +105,11 @@ class Seq2Seq(nn.Module):
         输出:
             logits: [batch_size, seq_len - 1, vocab_size]
             decoder_target: [batch_size, seq_len - 1]
+
         """
         hidden, cell = self.encoder(src_ids, src_lengths)
+        if self.channel is not None:
+            hidden = self.channel(hidden,snr_db)
         decoder_input = src_ids[:, :-1]
         decoder_target = src_ids[:, 1:]
         logits, _ = self.decoder(decoder_input, hidden, cell)

@@ -14,6 +14,8 @@ from data_utils import (
 from model import Encoder, Decoder, Seq2Seq
 from train_lstm import config, load_training_sentences, resolve_path
 from train_utils import evaluate_loss, greedy_decode, load_checkpoint, get_device, set_seed
+from channel import channel_types
+
 
 def get_ngrams(tokens, n):
     ngrams = []
@@ -98,10 +100,15 @@ def main():
     device = get_device()
     eval_config = config.copy()
     set_seed(eval_config["seed"])
-    eval_config['results_path'] = "experiments/lstm_noiseless_50k_h512/results.json"
-    eval_config['prediction_samples_path'] = "experiments/lstm_noiseless_50k_h512/prediction_samples.txt"
+    eval_config['results_path'] = "experiments/lstm_awgn_50k_h512_snr10/results.json"
+    eval_config['prediction_samples_path'] = "experiments/lstm_awgn_50k_h512_snr10/prediction_samples.txt"
     eval_config['max_samples'] = 100
 
+    if eval_config["use_channel"]:
+        channel = channel_types[eval_config["channel_type"]]()
+    else:
+        channel = None
+    
     sentences = load_training_sentences(eval_config)
     train_sentences, val_sentences, test_sentences = split_sentences(sentences, train_ratio=eval_config["train_ratio"], val_ratio=eval_config["val_ratio"], seed=eval_config["seed"])
 
@@ -115,7 +122,7 @@ def main():
 
     encoder = Encoder(vocab_size, eval_config["embed_dim"], eval_config["hidden_dim"], eval_config["num_layers"], pad_idx)
     decoder = Decoder(vocab_size, eval_config["embed_dim"], eval_config["hidden_dim"], eval_config["num_layers"], pad_idx)
-    model = Seq2Seq(encoder, decoder)
+    model = Seq2Seq(encoder, decoder, channel)
     model.to(device)
 
     criterion = nn.CrossEntropyLoss(ignore_index=pad_idx)
@@ -125,13 +132,13 @@ def main():
     print(f"epoch: {checkpoint['epoch']}")
     print(f"val_loss: {checkpoint['val_loss']:.4f}")
     print(f"train_loss_best: {checkpoint['train_loss']:.4f}")
-    test_loss = evaluate_loss(model, test_loader, criterion, device)
+    test_loss = evaluate_loss(model, test_loader, criterion, device,snr_db=eval_config["snr_db"])
 
     references = []
     predictions = []
     for sentence in test_sentences:
         references.append(sentence)
-        pred = greedy_decode(model, sentence, word2idx, idx2word, max_len=eval_config["max_len"]+2)
+        pred = greedy_decode(model, sentence, word2idx, idx2word, max_len=eval_config["max_len"]+2, snr_db=eval_config["snr_db"])
         predictions.append(pred)
     test_bleu = compute_bleu(references, predictions)
     print(f"test_loss: {test_loss:.4f}")
