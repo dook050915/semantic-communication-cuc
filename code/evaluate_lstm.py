@@ -129,9 +129,6 @@ def main():
 
     best_ckpt_path = resolve_path(eval_config["best_checkpoint_path"])
     checkpoint = load_checkpoint(model, None, str(best_ckpt_path), map_location=str(device))
-    print(f"epoch: {checkpoint['epoch']}")
-    print(f"val_loss: {checkpoint['val_loss']:.4f}")
-    print(f"train_loss_best: {checkpoint['train_loss']:.4f}")
     test_loss = evaluate_loss(model, test_loader, criterion, device,snr_db=eval_config["snr_db"])
 
     references = []
