@@ -19,19 +19,26 @@ def load_snr_results(path):
 def main():
     results1_path = "experiments/lstm_awgn_hidden_only_50k_h512_snr10/snr_sweep_results.txt"
     multi_results_path = "experiments/lstm_awgn_hidden_only_50k_h512_multi_snr/snr_sweep_results.txt"
-    save_path = "experiments/lstm_awgn_hidden_only_50k_h512_multi_snr/snr_sweep_curve.png"
+    multi_hidden_cell_results_path = "experiments/lstm_awgn_hidden_cell_50k_h512_multi_snr/snr_sweep_results.txt"
+    save_path = "experiments/lstm_awgn_hidden_cell_50k_h512_multi_snr/snr_sweep_curve.png"
     snrs, test_losses, bleus = load_snr_results(results1_path)
     multi_snrs, multi_test_losses, multi_bleus = load_snr_results(multi_results_path)
+    multi_hidden_cell_snrs, multi_hidden_cell_test_losses, multi_hidden_cell_bleus = load_snr_results(multi_hidden_cell_results_path)
+
     fig, axs = plt.subplots(1, 2, figsize=(10, 4))
     
-    axs[0].plot(snrs, test_losses, marker="o", label="Single-SNR")
-    axs[0].plot(multi_snrs, multi_test_losses, marker="x", color="red", label="Multi-SNR")
-    axs[1].plot(snrs, bleus, marker="o", label="Single-SNR")
-    axs[1].plot(multi_snrs, multi_bleus, marker="x", color="red", label="Multi-SNR")
+    axs[0].plot(snrs, test_losses, marker="o", label="Fixed-SNR, hidden only")
+    axs[0].plot(multi_snrs, multi_test_losses, marker="x", color="red", label="Multi-SNR, hidden only")
+    axs[0].plot(multi_hidden_cell_snrs, multi_hidden_cell_test_losses, marker="+", color="green", label="Multi-SNR, hidden + cell")
+
+    axs[1].plot(snrs, bleus, marker="o", label="Fixed-SNR, hidden only")
+    axs[1].plot(multi_snrs, multi_bleus, marker="x", color="red", label="Multi-SNR, hidden only")
+    axs[1].plot(multi_hidden_cell_snrs, multi_hidden_cell_bleus, marker="+", color="green", label="Multi-SNR, hidden + cell")
+
     axs[0].legend()
     axs[1].legend()
 
-    fig.suptitle("Single-SNR vs Multi-SNR Training")
+    fig.suptitle("AWGN Robustness Comparison")
     axs[0].set_xlabel("SNR(dB)")
     axs[0].set_ylabel("Test Loss")
     axs[1].set_xlabel("SNR(dB)")
