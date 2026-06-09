@@ -83,6 +83,15 @@ SNR(dB) | Test Loss | BLEU
 
 ![SNR comparison curve](snr_sweep_curve.png)
 
+## BLEU 指标说明:手写实现 → sacrebleu 校准
+
+上面表格里的 BLEU 最初由项目自写的 `compute_bleu` 计算(corpus 级、4-gram、带 brevity penalty)。为了让数值与 DeepSC 等文献可比、也避免自写实现被质疑,后续统一改用标准库 **sacrebleu**(corpus 级,`tokenize="none"`,与原手写口径一致,按空格切词)。
+
+校准结论:在相同预测上,手写 BLEU 与 sacrebleu 数学等价——无信道实验两者逐位相等(差约 1e-17),AWGN 各组差异 ≤ 0.0013(来自重新解码时的随机噪声,不是指标差异)。因此上方结论与曲线在标准指标下同样成立。
+
+- 本组的 sacrebleu 标准值见同目录 `sacrebleu_results.txt`(与旧值并排)
+- 三组 AWGN 的 sacrebleu 对比曲线见 `experiments/lstm/awgn/bleu_snr_sacrebleu.png`
+
 ## 与 hidden-only 多 SNR 的对比
 
 hidden-only 多 SNR 实验中，AWGN 只作用在 hidden state 上；本实验中，AWGN 同时作用在 hidden state 和 cell state 上。
