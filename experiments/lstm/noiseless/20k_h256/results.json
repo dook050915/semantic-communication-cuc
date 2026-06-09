@@ -21,11 +21,11 @@
     "batch_size": 96,
     "lr": 0.001,
     "epochs": 20,
-    "vocab_path": "experiments/lstm_noiseless_20k/vocab.json",
-    "checkpoint_path": "experiments/lstm_noiseless_20k/checkpoint_epoch20.pt",
-    "best_checkpoint_path": "experiments/lstm_noiseless_20k/checkpoint_best.pt",
-    "results_path": "experiments/lstm_noiseless_20k/results.json",
-    "prediction_samples_path": "experiments/lstm_noiseless_20k/prediction_samples.txt",
+    "vocab_path": "experiments/lstm/noiseless/20k_h256/vocab.json",
+    "checkpoint_path": "experiments/lstm/noiseless/20k_h256/checkpoint_epoch20.pt",
+    "best_checkpoint_path": "experiments/lstm/noiseless/20k_h256/checkpoint_best.pt",
+    "results_path": "experiments/lstm/noiseless/20k_h256/results.json",
+    "prediction_samples_path": "experiments/lstm/noiseless/20k_h256/prediction_samples.txt",
     "max_samples": 100
   }
 }

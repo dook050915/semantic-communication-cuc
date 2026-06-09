@@ -112,7 +112,7 @@ mr president, the situation in zimbabwe is already in brussels and practical.
 在相同 50k 数据上增大模型容量，继续测试的实验已经完成：
 
 ```text
-lstm_noiseless_50k_h512
+experiments/lstm/noiseless/50k_h512
 ```
 
 hidden_dim=512 带来了进一步的 test loss 和 BLEU 改善，说明当前瓶颈部分来自模型容量。

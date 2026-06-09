@@ -116,9 +116,9 @@ mr president, the situation in turkish rail is highly rail and unacceptable.
 当前无噪声 LSTM baseline 已经完成三组对照：
 
 ```text
-lstm_noiseless_20k_h256
-lstm_noiseless_50k_h256
-lstm_noiseless_50k_h512
+experiments/lstm/noiseless/20k_h256
+experiments/lstm/noiseless/50k_h256
+experiments/lstm/noiseless/50k_h512
 ```
 
 下一步在 Encoder 输出的语义状态上加入 AWGN channel，观察不同 SNR 下的 test loss 和 BLEU 变化。

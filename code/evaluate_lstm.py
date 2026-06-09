@@ -100,8 +100,8 @@ def main():
     device = get_device()
     eval_config = config.copy()
     set_seed(eval_config["seed"])
-    eval_config['results_path'] = "experiments/lstm_awgn_50k_h512_snr10/results.json"
-    eval_config['prediction_samples_path'] = "experiments/lstm_awgn_50k_h512_snr10/prediction_samples.txt"
+    eval_config['results_path'] = "experiments/lstm/awgn/hidden_cell/multi_snr_50k_h512/results.json"
+    eval_config['prediction_samples_path'] = "experiments/lstm/awgn/hidden_cell/multi_snr_50k_h512/prediction_samples.txt"
     eval_config['max_samples'] = 100
 
     if eval_config["use_channel"]:

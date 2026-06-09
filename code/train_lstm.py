@@ -48,9 +48,9 @@ config = {
     "channel_type":"AWGN",
     "snr_db":10,
     "snr_list":[-10, -5, 0, 5, 10, 15, 20],
-    "vocab_path": "experiments/lstm_awgn_hidden_cell_50k_h512_multi_snr/vocab.json",
-    "checkpoint_path": "experiments/lstm_awgn_hidden_cell_50k_h512_multi_snr/checkpoint_epoch20.pt",
-    "best_checkpoint_path": "experiments/lstm_awgn_hidden_cell_50k_h512_multi_snr/checkpoint_best.pt",
+    "vocab_path": "experiments/lstm/awgn/hidden_cell/multi_snr_50k_h512/vocab.json",
+    "checkpoint_path": "experiments/lstm/awgn/hidden_cell/multi_snr_50k_h512/checkpoint_epoch20.pt",
+    "best_checkpoint_path": "experiments/lstm/awgn/hidden_cell/multi_snr_50k_h512/checkpoint_best.pt",
 }
 
 

@@ -78,8 +78,8 @@ prediction:
 后续在无噪声设置下继续扩展了两组对照实验：
 
 ```text
-lstm_noiseless_50k_h256
-lstm_noiseless_50k_h512
+experiments/lstm/noiseless/50k_h256
+experiments/lstm/noiseless/50k_h512
 ```
 
 这两组实验分别用于观察数据量和模型容量对句子重构质量的影响。
