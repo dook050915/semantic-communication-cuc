@@ -63,7 +63,7 @@
 - 多 SNR 训练显著提升低 SNR 条件下的鲁棒性
 - cell state 对 LSTM 重构至关重要:同时扰动 hidden 与 cell 时,低 SNR 下退化明显加重
 
-BLEU-SNR 对比曲线:`experiments/lstm/awgn/hidden_cell/multi_snr_50k_h512/snr_sweep_curve.png`
+BLEU 用 sacrebleu(corpus 级)计算,与 DeepSC 等文献可比。BLEU-SNR 对比曲线:`experiments/lstm/awgn/bleu_snr_sacrebleu.png`
 
 ## 关键文献
 

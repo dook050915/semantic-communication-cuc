@@ -1,0 +1,2 @@
+SNR(dB) | BLEU_sacre | BLEU_old
+none | 0.2569 | 0.2569

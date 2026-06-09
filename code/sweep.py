@@ -56,9 +56,7 @@ def main():
     device = get_device()
     eval_config = config.copy()
     set_seed(eval_config["seed"])
-    eval_config['results_path'] = "experiments/lstm/awgn/hidden_cell/multi_snr_50k_h512/results.json"
-    eval_config['prediction_samples_path'] = "experiments/lstm/awgn/hidden_cell/multi_snr_50k_h512/prediction_samples.txt"
-    eval_config['max_samples'] = 100
+    eval_config['results_path'] = "experiments/lstm/awgn/hidden_cell/multi_snr_50k_h512/snr_sweep_results.txt"
 
     if eval_config["use_channel"]:
         channel = channel_types[eval_config["channel_type"]]()
@@ -84,30 +82,23 @@ def main():
     criterion = nn.CrossEntropyLoss(ignore_index=pad_idx)
 
     best_ckpt_path = resolve_path(eval_config["best_checkpoint_path"])
-    checkpoint = load_checkpoint(model, None, str(best_ckpt_path), map_location=str(device)) 
-    test_loss = evaluate_loss(model, test_loader, criterion, device,snr_db=eval_config["snr_db"])
+    checkpoint = load_checkpoint(model, None, str(best_ckpt_path), map_location=str(device))
+    snrs = [-10,-5,0,5,10,15,20]
+    with open(resolve_path(eval_config['results_path']), "w", encoding="utf-8") as f:
+        for snr in snrs:
+            eval_config["snr_db"] = snr
+            test_loss = evaluate_loss(model, test_loader, criterion, device,snr_db=eval_config["snr_db"])
 
-    references = []
-    predictions = []
-    for sentence in test_sentences:
-        references.append(sentence)
-        pred = greedy_decode(model, sentence, word2idx, idx2word, max_len=eval_config["max_len"]+2, snr_db=eval_config["snr_db"])
-        predictions.append(pred)
-    test_bleu = compute_bleu(references, predictions)
-    print(f"test_loss: {test_loss:.4f}")
-    print(f"test_bleu: {test_bleu:.4f}")
-
-    results = {
-        'checkpoint_epoch': checkpoint['epoch'],
-        'checkpoint_val_loss': checkpoint['val_loss'],
-        'train_loss_best': checkpoint['train_loss'],
-        'test_loss': test_loss,
-        'test_bleu': test_bleu,
-        'num_test_sentences': len(test_sentences),
-        "eval_config": eval_config,
-    }
-    save_results(results, resolve_path(eval_config['results_path']))
-    save_predictions(references, predictions, resolve_path(eval_config['prediction_samples_path']),max_samples=eval_config["max_samples"])
+            references = []
+            predictions = []
+            for sentence in test_sentences:
+                references.append(sentence)
+                pred = greedy_decode(model, sentence, word2idx, idx2word, max_len=eval_config["max_len"]+2, snr_db=eval_config["snr_db"])
+                predictions.append(pred)
+            test_bleu = compute_bleu(references, predictions)
+            print(f"test_loss: {test_loss:.4f}")
+            print(f"test_bleu: {test_bleu:.4f}")
+            f.write(f"snr_db: {snr}\ntest_loss: {test_loss:.4f}\ntest_bleu: {test_bleu:.4f}\n")
 
 
 if __name__ == "__main__":
