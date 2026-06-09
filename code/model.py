@@ -110,6 +110,7 @@ class Seq2Seq(nn.Module):
         hidden, cell = self.encoder(src_ids, src_lengths)
         if self.channel is not None:
             hidden = self.channel(hidden,snr_db)
+            cell = self.channel(cell,snr_db)
         decoder_input = src_ids[:, :-1]
         decoder_target = src_ids[:, 1:]
         logits, _ = self.decoder(decoder_input, hidden, cell)

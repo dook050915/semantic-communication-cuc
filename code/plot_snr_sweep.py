@@ -17,9 +17,9 @@ def load_snr_results(path):
 
 
 def main():
-    results1_path = "experiments/lstm_awgn_50k_h512_snr10/snr_sweep_results.txt"
-    multi_results_path = "experiments/lstm_awgn_50k_h512_multi_snr/snr_sweep_results.txt"
-    save_path = "experiments/lstm_awgn_50k_h512_multi_snr/snr_sweep_curve.png"
+    results1_path = "experiments/lstm_awgn_hidden_only_50k_h512_snr10/snr_sweep_results.txt"
+    multi_results_path = "experiments/lstm_awgn_hidden_only_50k_h512_multi_snr/snr_sweep_results.txt"
+    save_path = "experiments/lstm_awgn_hidden_only_50k_h512_multi_snr/snr_sweep_curve.png"
     snrs, test_losses, bleus = load_snr_results(results1_path)
     multi_snrs, multi_test_losses, multi_bleus = load_snr_results(multi_results_path)
     fig, axs = plt.subplots(1, 2, figsize=(10, 4))

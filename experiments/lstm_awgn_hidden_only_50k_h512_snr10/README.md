@@ -1,4 +1,4 @@
-# LSTM AWGN 句子重构实验（50k, hidden_dim=512, SNR=10 dB）
+# LSTM AWGN hidden-only 句子重构实验（50k, hidden_dim=512, SNR=10 dB）
 
 ## 实验目的
 
@@ -64,7 +64,7 @@ BLEU 分数在 0 到 1 之间，越接近 1 表示模型生成的句子和参考
 
 ```text
 50k_h512 test_loss = 2.4322, test_BLEU = 0.2867
-awgn_50k_h512 test_loss = 2.4398, test_BLEU = 0.2856
+awgn_hidden_only_50k_h512 test_loss = 2.4398, test_BLEU = 0.2856
 ```
 
 与不加入噪声版相比，加入噪声后，test_loss略微升高，BLEU略微下降，但下降幅度不大，说明经过训练后，模型有了一定的抗噪声性能，且与无噪声的性能差异较小。

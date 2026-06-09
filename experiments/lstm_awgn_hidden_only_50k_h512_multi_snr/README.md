@@ -1,4 +1,4 @@
-# LSTM AWGN 多 SNR 训练实验（50k, hidden_dim=512）
+# LSTM AWGN hidden-only 多 SNR 训练实验（50k, hidden_dim=512）
 
 ## 实验目的
 
