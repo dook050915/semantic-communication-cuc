@@ -68,8 +68,9 @@ SNR(dB) | Test Loss | BLEU
 15      | 3.3450    | 0.1638
 20      | 3.3424    | 0.1638
 ```
-
-各 channel_dim 的完整结果见各自目录下的 `snr_sweep_results.txt`,对比曲线见本目录 `snr_sweep_curve.png`(左为 Test Loss,右为 BLEU)。
+对比曲线：
+![channel_dim 消融对比:左 Test Loss、右 BLEU 随 SNR 变化](snr_sweep_curve.png)
+各 channel_dim 的完整结果见各自目录下的 `snr_sweep_results.txt`
 
 所有 channel_dim 的 BLEU 都随 SNR 单调上升、高 SNR 饱和,低 SNR 明显退化,说明信道确实起了作用。
 
