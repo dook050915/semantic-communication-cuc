@@ -56,7 +56,7 @@ def main():
     device = get_device()
     eval_config = config.copy()
     set_seed(eval_config["seed"])
-    eval_config['results_path'] = "experiments/lstm/awgn/hidden_cell/multi_snr_50k_h512/snr_sweep_results.txt"
+    eval_config['results_path'] = "experiments/lstm/awgn/real_channel/multi_snr_50k_h512_c128/snr_sweep_results.txt"
 
     if eval_config["use_channel"]:
         channel = channel_types[eval_config["channel_type"]]()
@@ -76,7 +76,7 @@ def main():
 
     encoder = Encoder(vocab_size, eval_config["embed_dim"], eval_config["hidden_dim"], eval_config["num_layers"], pad_idx)
     decoder = Decoder(vocab_size, eval_config["embed_dim"], eval_config["hidden_dim"], eval_config["num_layers"], pad_idx)
-    model = Seq2Seq(encoder, decoder, channel)
+    model = Seq2Seq(encoder, decoder, channel, eval_config["channel_dim"])
     model.to(device)
 
     criterion = nn.CrossEntropyLoss(ignore_index=pad_idx)

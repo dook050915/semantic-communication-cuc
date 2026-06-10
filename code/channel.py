@@ -1,6 +1,13 @@
 import torch
 import torch.nn as nn
 
+def power_normalize(x, eps=1e-8):
+    """发射功率约束:把每个样本的发送向量归一化到平均功率=1。
+    x: [batch, n] 发送信号；返回同形状,逐样本平均功率=1,梯度可穿过。
+    """
+    P = x.pow(2).mean(dim=1, keepdim=True)
+    return x / torch.sqrt(P + eps)
+
 class AWGNChannel(nn.Module):
     """
     AWGN 信道层。

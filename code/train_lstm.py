@@ -40,6 +40,7 @@ config = {
     "val_ratio": 0.1,
     "embed_dim": 128,
     "hidden_dim": 512,
+    "channel_dim": 128,
     "num_layers": 1,
     "batch_size": 96,
     "lr": 1e-3,
@@ -48,9 +49,9 @@ config = {
     "channel_type":"AWGN",
     "snr_db":10,
     "snr_list":[-10, -5, 0, 5, 10, 15, 20],
-    "vocab_path": "experiments/lstm/awgn/hidden_cell/multi_snr_50k_h512/vocab.json",
-    "checkpoint_path": "experiments/lstm/awgn/hidden_cell/multi_snr_50k_h512/checkpoint_epoch20.pt",
-    "best_checkpoint_path": "experiments/lstm/awgn/hidden_cell/multi_snr_50k_h512/checkpoint_best.pt",
+    "vocab_path": "experiments/lstm/awgn/real_channel/multi_snr_50k_h512_c128/vocab.json",
+    "checkpoint_path": "experiments/lstm/awgn/real_channel/multi_snr_50k_h512_c128/checkpoint_epoch20.pt",
+    "best_checkpoint_path": "experiments/lstm/awgn/real_channel/multi_snr_50k_h512_c128/checkpoint_best.pt",
 }
 
 
@@ -143,7 +144,7 @@ def main():
         num_layers=config["num_layers"],
         pad_idx=pad_idx,
     )
-    model = Seq2Seq(encoder, decoder,channel=channel).to(device)
+    model = Seq2Seq(encoder, decoder,channel=channel,channel_dim=config["channel_dim"]).to(device)
 
     criterion = nn.CrossEntropyLoss(ignore_index=pad_idx)
     optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"])

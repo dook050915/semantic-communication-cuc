@@ -1,6 +1,6 @@
 import torch.nn as nn
 from torch.nn.utils.rnn import pack_padded_sequence
-
+from channel import power_normalize
 
 class Encoder(nn.Module):
     """LSTM Encoder：把输入句子编码成 hidden/cell 语义状态。"""
@@ -86,12 +86,31 @@ class Decoder(nn.Module):
 class Seq2Seq(nn.Module):
     """完整 Seq2Seq 模型：Encoder 读原句，可选信道扰动 hidden，Decoder 重构原句。"""
 
-    def __init__(self, encoder, decoder, channel=None):
+    def __init__(self, encoder, decoder, channel=None,channel_dim=128):
         """把已经定义好的 encoder 和 decoder 组合起来。"""
         super().__init__()
         self.encoder = encoder
         self.decoder = decoder
         self.channel = channel
+        L = encoder.lstm.num_layers
+        H = encoder.lstm.hidden_size
+        state_dim = 2*L*H
+        self.channel_encoder = nn.Linear(state_dim, channel_dim)
+        self.channel_decoder = nn.Linear(channel_dim, state_dim)
+
+    def transmit(self, hidden, cell, snr_db=None):
+        """发送链:hidden,cell [L,B,H] → 编码→归一化→加噪→解码 → 还原 [L,B,H]"""
+        L, B, H = hidden.shape
+        hidden = hidden.permute(1,0,2).reshape(B,-1)
+        cell = cell.permute(1,0,2).reshape(B,-1)
+        state = torch.cat((hidden,cell),dim=1)
+        state = self.channel_encoder(state)
+        state = power_normalize(state)
+        state_channel = self.channel(state, snr_db) if snr_db is not None else state
+        state_hat = self.channel_decoder(state_channel)
+        hidden_hat = state_hat[:,:L*H].reshape(B,L,H).permute(1,0,2)
+        cell_hat = state_hat[:,L*H:].reshape(B,L,H).permute(1,0,2)
+        return hidden_hat, cell_hat
 
     def forward(self, src_ids, src_lengths, snr_db=None):
         """训练时使用 teacher forcing，返回 logits 和右移后的 target。
@@ -109,8 +128,7 @@ class Seq2Seq(nn.Module):
         """
         hidden, cell = self.encoder(src_ids, src_lengths)
         if self.channel is not None:
-            hidden = self.channel(hidden,snr_db)
-            cell = self.channel(cell,snr_db)
+            hidden, cell = self.transmit(hidden, cell, snr_db)
         decoder_input = src_ids[:, :-1]
         decoder_target = src_ids[:, 1:]
         logits, _ = self.decoder(decoder_input, hidden, cell)

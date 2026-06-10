@@ -102,8 +102,7 @@ def greedy_decode(model, sentence, word2idx, idx2word, max_len=32, snr_db=None):
     with torch.no_grad():
         hidden, cell = model.encoder(src_ids, src_lengths)
         if model.channel is not None:
-            hidden = model.channel(hidden, snr_db=snr_db)
-            cell = model.channel(cell, snr_db=snr_db)
+            hidden,cell = model.transmit(hidden, cell, snr_db=snr_db)
         decoder_input = torch.tensor(
             [[word2idx["<SOS>"]]], dtype=torch.long, device=device
         )
