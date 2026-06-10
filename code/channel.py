@@ -43,6 +43,39 @@ class AWGNChannel(nn.Module):
         noisy_x = x + noise
         return noisy_x
 
+class RayleighChannel(nn.Module):
+    """
+    平坦瑞利衰落信道 + AWGN，完美 CSI 均衡（符号级衰落）。
+
+    输入:
+        x: [B, n] 实数，n 为偶数；相邻两维 (I, Q) 凑成一个复符号 → n/2 个复符号
+        snr_db: 每符号信噪比，单位 dB
+    输出:
+        y: [B, n] 实数，和 x 同形状
+    """
+
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x, snr_db):
+        if snr_db is None:
+            return x
+
+        B, n = x.shape
+        snr_linear = 10 ** (snr_db / 10)
+        xc = torch.view_as_complex(x.reshape(B,n//2,2).contiguous())
+        signal_power = xc.abs().pow(2).mean()
+        N0 = signal_power.detach() / snr_linear
+        h = torch.randn(B,n//2,dtype=torch.complex64,device=x.device) 
+        noise = torch.sqrt(N0) * torch.randn(B,n//2,dtype=torch.complex64,device=x.device)
+        yc = h * xc + noise
+        yc = yc/h
+
+        y = torch.view_as_real(yc).reshape(B, n).contiguous()
+        return y
+
+
 channel_types = {
     "AWGN": AWGNChannel,
+    "Rayleigh": RayleighChannel,
 }
