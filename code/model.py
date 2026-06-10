@@ -109,8 +109,8 @@ class Seq2Seq(nn.Module):
         state = power_normalize(state)
         state_channel = self.channel(state, snr_db) if snr_db is not None else state
         state_hat = self.channel_decoder(state_channel)
-        hidden_hat = state_hat[:,:L*H].reshape(B,L,H).permute(1,0,2)
-        cell_hat = state_hat[:,L*H:].reshape(B,L,H).permute(1,0,2)
+        hidden_hat = state_hat[:,:L*H].reshape(B,L,H).permute(1,0,2).contiguous()
+        cell_hat = state_hat[:,L*H:].reshape(B,L,H).permute(1,0,2).contiguous()
         return hidden_hat, cell_hat
 
     def forward(self, src_ids, src_lengths, snr_db=None):
