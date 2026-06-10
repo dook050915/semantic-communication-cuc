@@ -11,7 +11,7 @@ from data_utils import (
 )
 from model import Encoder, Decoder, Seq2Seq
 from train_lstm import config, load_training_sentences, resolve_path
-from train_utils import evaluate_loss, greedy_decode, load_checkpoint, get_device, set_seed
+from train_utils import evaluate_loss, greedy_decode, load_checkpoint, get_device, set_seed,greedy_decode_batch
 from channel import channel_types
 
 
@@ -85,20 +85,17 @@ def main():
     checkpoint = load_checkpoint(model, None, str(best_ckpt_path), map_location=str(device))
     snrs = [-10,-5,0,5,10,15,20]
     with open(resolve_path(eval_config['results_path']), "w", encoding="utf-8") as f:
+        f.write("SNR(dB) | Test Loss | BLEU\n")
         for snr in snrs:
             eval_config["snr_db"] = snr
             test_loss = evaluate_loss(model, test_loader, criterion, device,snr_db=eval_config["snr_db"])
 
-            references = []
-            predictions = []
-            for sentence in test_sentences:
-                references.append(sentence)
-                pred = greedy_decode(model, sentence, word2idx, idx2word, max_len=eval_config["max_len"]+2, snr_db=eval_config["snr_db"])
-                predictions.append(pred)
-            test_bleu = compute_bleu(references, predictions)
+            predictions = greedy_decode_batch(model, test_loader,  word2idx, idx2word, max_len=eval_config["max_len"]+2, snr_db=eval_config["snr_db"])
+            
+            test_bleu = compute_bleu(test_sentences, predictions)
             print(f"test_loss: {test_loss:.4f}")
             print(f"test_bleu: {test_bleu:.4f}")
-            f.write(f"snr_db: {snr}\ntest_loss: {test_loss:.4f}\ntest_bleu: {test_bleu:.4f}\n")
+            f.write(f"{snr:<7} | {test_loss:<9.4f} | {test_bleu:.4f}\n")
 
 
 if __name__ == "__main__":

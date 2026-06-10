@@ -17,14 +17,22 @@ experiments/
         multi_snr_50k_h512/
       hidden_cell/
         multi_snr_50k_h512/
+      real_channel/                  # channel encoder/decoder + 功率归一化的真信道
+        snr_sweep_curve.png          # channel_dim 消融对比图
+        multi_snr_50k_h512_c32/
+        multi_snr_50k_h512_c64/
+        multi_snr_50k_h512_c128/
+        multi_snr_50k_h512_c256/
+        multi_snr_50k_h512_c512/
 ```
 
 ## 命名规则
 
 - 第一层是模型结构，例如 `lstm`，后续可以扩展为 `transformer`。
 - 第二层是信道条件，例如 `noiseless` 或 `awgn`。
-- 第三层是状态扰动方式，例如 `hidden_only` 或 `hidden_cell`。
-- 最后一层是具体实验配置，例如 `multi_snr_50k_h512`。
+- 第三层是信道实现方式：`hidden_only` / `hidden_cell`（直接对内部状态加噪），或 `real_channel`（channel encoder/decoder + 功率归一化的真信道）。
+- 最后一层是具体实验配置，例如 `multi_snr_50k_h512`；`real_channel` 下再带 channel_dim 后缀，如 `multi_snr_50k_h512_c128`。
+- `real_channel` 这一层目录下还放一张 `snr_sweep_curve.png`，是不同 channel_dim 的消融对比图。
 
 每个具体实验目录保存该实验产生的结果文件，例如：
 
@@ -35,5 +43,7 @@ experiments/
 - `snr_sweep_curve.png`：SNR sweep 曲线
 - `train_log.txt`：训练日志
 - `vocab.json`：该实验对应词表
+
+BLEU 取值 0 到 1。早期实验（noiseless / hidden_only / hidden_cell）的结果与曲线用项目自写的 corpus 级 BLEU 计算；之后用 sacrebleu（tokenize=none）做过校准，两者数值基本一致（见各目录 `sacrebleu_results.txt` 与 hidden_cell 的 BLEU 说明）。从 `real_channel` 实验起，直接采用 sacrebleu。
 
 checkpoint 文件用于本地复现和继续评估，不作为 GitHub 展示文件。

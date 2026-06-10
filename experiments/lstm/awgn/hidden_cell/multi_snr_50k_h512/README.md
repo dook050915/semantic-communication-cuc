@@ -130,3 +130,5 @@ cell state 对 LSTM 句子重构至关重要。相比只扰动 hidden state，�
 - 对 cell state 做更充分的抗噪训练
 - 引入 attention 或 Transformer，减少模型对单个 LSTM cell state 的依赖
 - 进一步区分“模型内部状态扰动”和“真实信道传输信号扰动”
+
+其中最后一点已在 `real_channel` 实验中实现：在 Encoder 和 Decoder 之间加入 channel encoder/decoder 与功率归一化，把语义当作真正受功率约束的发送信号过信道，而不再直接对内部状态加噪。详见 `experiments/lstm/awgn/real_channel/`。

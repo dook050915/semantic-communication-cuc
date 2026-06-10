@@ -1,0 +1,45 @@
+device: cuda
+num sentences: 50000
+vocab saved to C:\Users\dook\Projects\semantic-communication-cuc\experiments\lstm\awgn\real_channel\multi_snr_50k_h512_c512\vocab.json
+checkpoint saved to C:\Users\dook\Projects\semantic-communication-cuc\experiments\lstm\awgn\real_channel\multi_snr_50k_h512_c512\checkpoint_best.pt
+Epoch 1/20, Train Loss: 5.3821, Train Eval Loss: 4.4554, Val Loss: 4.4407
+checkpoint saved to C:\Users\dook\Projects\semantic-communication-cuc\experiments\lstm\awgn\real_channel\multi_snr_50k_h512_c512\checkpoint_best.pt
+Epoch 2/20, Train Loss: 4.2645, Train Eval Loss: 3.9055, Val Loss: 4.0242
+checkpoint saved to C:\Users\dook\Projects\semantic-communication-cuc\experiments\lstm\awgn\real_channel\multi_snr_50k_h512_c512\checkpoint_best.pt
+Epoch 3/20, Train Loss: 3.8400, Train Eval Loss: 3.5267, Val Loss: 3.7759
+checkpoint saved to C:\Users\dook\Projects\semantic-communication-cuc\experiments\lstm\awgn\real_channel\multi_snr_50k_h512_c512\checkpoint_best.pt
+Epoch 4/20, Train Loss: 3.5273, Train Eval Loss: 3.2292, Val Loss: 3.6080
+checkpoint saved to C:\Users\dook\Projects\semantic-communication-cuc\experiments\lstm\awgn\real_channel\multi_snr_50k_h512_c512\checkpoint_best.pt
+Epoch 5/20, Train Loss: 3.2826, Train Eval Loss: 2.9838, Val Loss: 3.4962
+checkpoint saved to C:\Users\dook\Projects\semantic-communication-cuc\experiments\lstm\awgn\real_channel\multi_snr_50k_h512_c512\checkpoint_best.pt
+Epoch 6/20, Train Loss: 3.0616, Train Eval Loss: 2.7653, Val Loss: 3.4257
+checkpoint saved to C:\Users\dook\Projects\semantic-communication-cuc\experiments\lstm\awgn\real_channel\multi_snr_50k_h512_c512\checkpoint_best.pt
+Epoch 7/20, Train Loss: 2.8683, Train Eval Loss: 2.5837, Val Loss: 3.3783
+checkpoint saved to C:\Users\dook\Projects\semantic-communication-cuc\experiments\lstm\awgn\real_channel\multi_snr_50k_h512_c512\checkpoint_best.pt
+Epoch 8/20, Train Loss: 2.6931, Train Eval Loss: 2.4083, Val Loss: 3.3469
+checkpoint saved to C:\Users\dook\Projects\semantic-communication-cuc\experiments\lstm\awgn\real_channel\multi_snr_50k_h512_c512\checkpoint_best.pt
+Epoch 9/20, Train Loss: 2.5498, Train Eval Loss: 2.2556, Val Loss: 3.3342
+checkpoint saved to C:\Users\dook\Projects\semantic-communication-cuc\experiments\lstm\awgn\real_channel\multi_snr_50k_h512_c512\checkpoint_best.pt
+Epoch 10/20, Train Loss: 2.4048, Train Eval Loss: 2.1148, Val Loss: 3.3268
+Epoch 11/20, Train Loss: 2.2755, Train Eval Loss: 1.9961, Val Loss: 3.3312
+Epoch 12/20, Train Loss: 2.1828, Train Eval Loss: 1.8926, Val Loss: 3.3457
+Epoch 13/20, Train Loss: 2.0646, Train Eval Loss: 1.7631, Val Loss: 3.3487
+Epoch 14/20, Train Loss: 1.9385, Train Eval Loss: 1.6683, Val Loss: 3.3779
+Epoch 15/20, Train Loss: 1.8733, Train Eval Loss: 1.5792, Val Loss: 3.3999
+Epoch 16/20, Train Loss: 1.7572, Train Eval Loss: 1.4780, Val Loss: 3.4164
+Epoch 17/20, Train Loss: 1.6826, Train Eval Loss: 1.4040, Val Loss: 3.4523
+Epoch 18/20, Train Loss: 1.6024, Train Eval Loss: 1.3334, Val Loss: 3.4847
+Epoch 19/20, Train Loss: 1.5396, Train Eval Loss: 1.2589, Val Loss: 3.5178
+Epoch 20/20, Train Loss: 1.4741, Train Eval Loss: 1.2027, Val Loss: 3.5554
+checkpoint saved to C:\Users\dook\Projects\semantic-communication-cuc\experiments\lstm\awgn\real_channel\multi_snr_50k_h512_c512\checkpoint_epoch20.pt
+
+Greedy decode samples:
+src : as the time allocated to question time to the council has now elapsed, questions nos 23 to 44 will receive written replies.
+pred: as the time allotted to questions to the commission has elapsed, questions nos 55 to 85 will be replied to in writing
+
+src : otherwise, i support the proposal to set up a system for labelling products with their country of origin.
+pred: so i support the rapporteur's proposal to reject this report by mr queir¨® illustrates a common european policy.
+
+src : others say that it is an illegitimate, authoritarian and elitist state.
+pred: good luck is that this <UNK> should be <UNK>
+

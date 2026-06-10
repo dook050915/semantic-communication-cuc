@@ -24,7 +24,7 @@
 Encoder 将输入句子编码为 hidden state 和 cell state；Decoder 使用这些状态重构原句。
 当前版本没有 attention，也没有加入信道噪声。
 
-## 超参数
+## 训练设置
 
 ```text
 embedding_dim = 128

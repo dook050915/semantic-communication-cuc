@@ -153,6 +153,8 @@ def decode(ids, idx2word):
         idx = int(idx)
         if idx not in (0, 1, 2):
             sentence += idx2word[idx] + " "
+        if idx == 2:
+            return sentence.strip()
     return sentence.strip()
 
 

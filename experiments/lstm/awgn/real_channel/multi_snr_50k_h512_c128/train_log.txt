@@ -1,0 +1,44 @@
+device: cuda
+num sentences: 50000
+vocab saved to experiments/lstm/awgn/real_channel/multi_snr_50k_h512_c128/vocab.json
+checkpoint saved (best)
+Epoch 1/20, Train Loss: 5.4207, Train Eval Loss: 4.5006, Val Loss: 4.4857
+checkpoint saved (best)
+Epoch 2/20, Train Loss: 4.3065, Train Eval Loss: 3.9275, Val Loss: 4.0449
+checkpoint saved (best)
+Epoch 3/20, Train Loss: 3.8768, Train Eval Loss: 3.5498, Val Loss: 3.7931
+checkpoint saved (best)
+Epoch 4/20, Train Loss: 3.5678, Train Eval Loss: 3.2536, Val Loss: 3.6381
+checkpoint saved (best)
+Epoch 5/20, Train Loss: 3.3378, Train Eval Loss: 3.0240, Val Loss: 3.5416
+checkpoint saved (best)
+Epoch 6/20, Train Loss: 3.1248, Train Eval Loss: 2.8141, Val Loss: 3.4710
+checkpoint saved (best)
+Epoch 7/20, Train Loss: 2.9385, Train Eval Loss: 2.6161, Val Loss: 3.4158
+checkpoint saved (best)
+Epoch 8/20, Train Loss: 2.7647, Train Eval Loss: 2.4475, Val Loss: 3.3841
+checkpoint saved (best)
+Epoch 9/20, Train Loss: 2.6307, Train Eval Loss: 2.3047, Val Loss: 3.3749
+checkpoint saved (best)
+Epoch 10/20, Train Loss: 2.4896, Train Eval Loss: 2.1639, Val Loss: 3.3623
+Epoch 11/20, Train Loss: 2.3634, Train Eval Loss: 2.0413, Val Loss: 3.3760
+Epoch 12/20, Train Loss: 2.2782, Train Eval Loss: 1.9325, Val Loss: 3.3907
+Epoch 13/20, Train Loss: 2.1645, Train Eval Loss: 1.8210, Val Loss: 3.4001
+Epoch 14/20, Train Loss: 2.0362, Train Eval Loss: 1.7179, Val Loss: 3.4217
+Epoch 15/20, Train Loss: 1.9755, Train Eval Loss: 1.6313, Val Loss: 3.4507
+Epoch 16/20, Train Loss: 1.8559, Train Eval Loss: 1.5381, Val Loss: 3.4716
+Epoch 17/20, Train Loss: 1.7870, Train Eval Loss: 1.4600, Val Loss: 3.5010
+Epoch 18/20, Train Loss: 1.7041, Train Eval Loss: 1.3820, Val Loss: 3.5305
+Epoch 19/20, Train Loss: 1.6499, Train Eval Loss: 1.3101, Val Loss: 3.5629
+Epoch 20/20, Train Loss: 1.5821, Train Eval Loss: 1.2486, Val Loss: 3.6071
+checkpoint saved (epoch20)
+
+Greedy decode samples (snr_db=10):
+src : as the time allocated to question time to the council has now elapsed, questions nos 23 to 44 will receive written replies.
+pred: as the time allocated to question time is at the end of the debate on chocolate and will be replaced by:
+
+src : otherwise, i support the proposal to set up a system for labelling products with their country of origin.
+pred: accordingly, i voted in favour of the report, which i should like to highlight certain aspects of it.
+
+src : others say that it is an illegitimate, authoritarian and elitist state.
+pred: another point is that <UNK> is not a point of order.

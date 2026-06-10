@@ -121,6 +121,36 @@ def greedy_decode(model, sentence, word2idx, idx2word, max_len=32, snr_db=None):
 
     return decode(generated_ids, idx2word)
 
+def greedy_decode_batch(model, loader, word2idx, idx2word, max_len=32, snr_db=None):
+    # 准备:model.eval();device;no_grad;all_preds=[]
+    model.eval()
+    device = next(model.parameters()).device
+    all_preds = []
+    with torch.no_grad():
+        for src_ids, lengths in loader:          
+            src_ids = src_ids.to(device)
+            lengths = lengths.cpu()
+            hidden, cell = model.encoder(src_ids, lengths)
+            if model.channel is not None:
+                hidden,cell = model.transmit(hidden, cell, snr_db=snr_db)
+            decoder_input = torch.full((src_ids.shape[0],1), word2idx["<SOS>"], dtype=torch.long, device=device)
+            finished = torch.tensor([False]*src_ids.shape[0], dtype=torch.bool, device=device)
+            generated_ids = torch.zeros((src_ids.shape[0], max_len), dtype=torch.long, device=device)
+            for i in range(max_len):
+                logits, (hidden, cell) = model.decoder(decoder_input, hidden, cell)
+                next_ids = logits[:, -1, :].argmax(dim=1)
+                finished |=(next_ids==word2idx["<EOS>"])
+                if finished.all():
+                    break
+                decoder_input = next_ids.unsqueeze(1)
+                generated_ids[:, i] = next_ids
+            for gen_id in generated_ids:
+                all_preds.append(decode(gen_id, idx2word))
+        
+    return all_preds
+            
+            
+
 
 def save_checkpoint(model, optimizer, epoch, train_loss, val_loss, config, vocab_path, path):
     """保存模型、优化器、epoch、loss、config 和词表路径。"""

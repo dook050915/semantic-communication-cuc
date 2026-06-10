@@ -102,6 +102,8 @@ multi-SNR 训练模型在所有测试 SNR 下都取得了更低的 test loss 和
 
 当前实验只在 hidden state 上加入噪声，没有对 cell state 加噪。因此 Encoder 输出并没有被完全扰动，实验结论对应的是一种简化版 hidden-level AWGN 信道。
 
+值得强调的是，曲线之所以几乎水平、且始终接近无噪水平，是两个因素共同作用的结果：multi-SNR 训练让模型对各档噪声都鲁棒，而 cell 未加噪这条干净旁路让低 SNR 下的语义信息依然存活。换句话说，multi-SNR 训练只能把曲线压平到「信息物理上还活着」的程度——这里 cell 干净、信息没丢，所以能压到全平。作为对照，后续 hidden+cell 同时加噪的实验同样用 multi-SNR 训练，但因为没有这条旁路，低 SNR 下信息被噪声破坏，曲线就不再水平、明显下降。可见「曲线平」= multi-SNR 鲁棒性 ×（低 SNR 信息是否还存活），两者缺一不可。
+
 ## 下一步
 
 下一步可以在 cell state 上也加入 AWGN 噪声，观察同时扰动 hidden state 和 cell state 后，模型在不同 SNR 条件下的重构性能是否会进一步下降。

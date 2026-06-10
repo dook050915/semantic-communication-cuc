@@ -1,0 +1,14 @@
+test_loss: 3.9699
+test_bleu: 0.0321
+test_loss: 3.8050
+test_bleu: 0.0614
+test_loss: 3.6094
+test_bleu: 0.1057
+test_loss: 3.4981
+test_bleu: 0.1364
+test_loss: 3.4584
+test_bleu: 0.1445
+test_loss: 3.4446
+test_bleu: 0.1481
+test_loss: 3.4404
+test_bleu: 0.1479

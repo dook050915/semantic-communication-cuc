@@ -17,28 +17,36 @@ def load_snr_results(path):
 
 
 def main():
-    results1_path = "experiments/lstm/awgn/hidden_only/fixed_snr10_50k_h512/snr_sweep_results.txt"
-    multi_results_path = "experiments/lstm/awgn/hidden_only/multi_snr_50k_h512/snr_sweep_results.txt"
-    multi_hidden_cell_results_path = "experiments/lstm/awgn/hidden_cell/multi_snr_50k_h512/snr_sweep_results.txt"
-    save_path = "experiments/lstm/awgn/hidden_cell/multi_snr_50k_h512/snr_sweep_curve.png"
-    snrs, test_losses, bleus = load_snr_results(results1_path)
-    multi_snrs, multi_test_losses, multi_bleus = load_snr_results(multi_results_path)
-    multi_hidden_cell_snrs, multi_hidden_cell_test_losses, multi_hidden_cell_bleus = load_snr_results(multi_hidden_cell_results_path)
+    results_c32_path = "experiments/lstm/awgn/real_channel/multi_snr_50k_h512_c32/snr_sweep_results.txt"
+    results_c64_path = "experiments/lstm/awgn/real_channel/multi_snr_50k_h512_c64/snr_sweep_results.txt"
+    results_c128_path = "experiments/lstm/awgn/real_channel/multi_snr_50k_h512_c128/snr_sweep_results.txt"
+    results_c256_path = "experiments/lstm/awgn/real_channel/multi_snr_50k_h512_c256/snr_sweep_results.txt"
+    results_c512_path = "experiments/lstm/awgn/real_channel/multi_snr_50k_h512_c512/snr_sweep_results.txt"
 
+    save_path = "experiments/lstm/awgn/real_channel/snr_sweep_curve.png"
+    snrs_c32, test_losses_c32, bleus_c32 = load_snr_results(results_c32_path)
+    snrs_c64, test_losses_c64, bleus_c64 = load_snr_results(results_c64_path)
+    snrs_c128, test_losses_c128, bleus_c128 = load_snr_results(results_c128_path)
+    snrs_c256, test_losses_c256, bleus_c256 = load_snr_results(results_c256_path)
+    snrs_c512, test_losses_c512, bleus_c512 = load_snr_results(results_c512_path)
     fig, axs = plt.subplots(1, 2, figsize=(10, 4))
     
-    axs[0].plot(snrs, test_losses, marker="o", label="Fixed-SNR, hidden only")
-    axs[0].plot(multi_snrs, multi_test_losses, marker="x", color="red", label="Multi-SNR, hidden only")
-    axs[0].plot(multi_hidden_cell_snrs, multi_hidden_cell_test_losses, marker="+", color="green", label="Multi-SNR, hidden + cell")
+    axs[0].plot(snrs_c32, test_losses_c32, marker="o", label="Channel Dim: 32")
+    axs[0].plot(snrs_c64, test_losses_c64, marker="x", color="red", label="Channel Dim: 64")
+    axs[0].plot(snrs_c128, test_losses_c128, marker="o", color="green", label="Channel Dim: 128")
+    axs[0].plot(snrs_c256, test_losses_c256, marker="x", color="blue", label="Channel Dim: 256")
+    axs[0].plot(snrs_c512, test_losses_c512, marker="o", color="orange", label="Channel Dim: 512")
 
-    axs[1].plot(snrs, bleus, marker="o", label="Fixed-SNR, hidden only")
-    axs[1].plot(multi_snrs, multi_bleus, marker="x", color="red", label="Multi-SNR, hidden only")
-    axs[1].plot(multi_hidden_cell_snrs, multi_hidden_cell_bleus, marker="+", color="green", label="Multi-SNR, hidden + cell")
+    axs[1].plot(snrs_c32, bleus_c32, marker="o", label="Channel Dim: 32")
+    axs[1].plot(snrs_c64, bleus_c64, marker="x", color="red", label="Channel Dim: 64")
+    axs[1].plot(snrs_c128, bleus_c128, marker="o", color="green", label="Channel Dim: 128")
+    axs[1].plot(snrs_c256, bleus_c256, marker="x", color="blue", label="Channel Dim: 256")
+    axs[1].plot(snrs_c512, bleus_c512, marker="o", color="orange", label="Channel Dim: 512")
 
     axs[0].legend()
     axs[1].legend()
 
-    fig.suptitle("AWGN Robustness Comparison")
+    fig.suptitle("AWGN BLEU-SNR vs channel_dim")
     axs[0].set_xlabel("SNR(dB)")
     axs[0].set_ylabel("Test Loss")
     axs[1].set_xlabel("SNR(dB)")
