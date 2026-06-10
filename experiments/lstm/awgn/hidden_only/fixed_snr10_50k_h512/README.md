@@ -71,7 +71,9 @@ awgn_hidden_only_50k_h512 test_loss = 2.4398, test_BLEU = 0.2856
 
 ## 结果观察
 
-10 dB 下 AWGN 结果和无噪声结果接近，说明 hidden-level 表征对轻度噪声有一定鲁棒性。
+10 dB 下 AWGN 结果和无噪声结果接近，当时判断是 hidden-level 表征对轻度噪声有一定鲁棒性。
+
+> 补注（后续认知更新）：后来的 hidden_cell 实验才发现，本实验只对 hidden 加噪、cell 干净直传，Decoder 能靠这条未受扰的 cell 通路恢复大部分内容——这也是结果接近无噪的重要原因。两个因素（hidden 表征的抗噪 + cell 旁路）共同作用，写本实验时尚未意识到 cell 的影响。低 SNR 下仍有明显退化，见下面的 SNR sweep。
 
 ## SNR Sweep
 

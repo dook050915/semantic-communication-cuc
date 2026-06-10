@@ -2,7 +2,7 @@
 
 文本语义通信项目:复现 DeepSC(Xie et al., IEEE TSP 2021)的核心思路。先用 LSTM 搭出能跑通的端到端 baseline 并加入信道,再逐步升级到 Transformer 与完整物理信道。
 
-状态:LSTM baseline 已跑通(无信道 + AWGN 信道,已产出 BLEU-SNR 曲线),正在准备 Transformer(DeepSC)版本。
+状态:LSTM baseline 已完成——无信道 → AWGN latent-noise 敏感性分析 → 真信道(channel encoder/decoder + 功率归一化,含 channel_dim 消融),已产出 BLEU-SNR 曲线。下一步加 Rayleigh 衰落信道,之后升级 Transformer(DeepSC)。
 
 ---
 
@@ -17,23 +17,28 @@
 | 阶段 | 内容 | 状态 |
 |------|------|------|
 | 1. LSTM baseline(无信道) | Seq2Seq 自编码,端到端重建句子,BLEU 评估 | 完成 |
-| 2. LSTM + AWGN 信道 | 对语义状态加噪,SNR 扫描,BLEU-SNR 曲线,鲁棒性消融 | 完成 |
-| 3. Transformer(DeepSC) | 编解码升级为 Transformer,补全 channel encoder/decoder + 功率归一化,对比两版;后续加 Rayleigh | 进行中 |
+| 2. LSTM + AWGN 信道 | 先对语义状态加噪做敏感性分析,再补全 channel encoder/decoder + 功率归一化的真信道;SNR 扫描、BLEU-SNR 曲线、channel_dim 消融 | 完成 |
+| 3. Rayleigh 衰落信道 | 在真信道上加 y = h·x + n,对比 AWGN 与 Rayleigh | 待启动 |
+| 4. Transformer(DeepSC) | 编解码升级为 Transformer,复用同一条信道链,对比 LSTM 两版 | 待启动 |
 
 简化策略:第一版不引入 MI 正则项、BERT 预训练 embedding、Transformer,先用 LSTM + 纯交叉熵 loss + 从零训练的词向量把链路跑通,这些增强项留到第二版。
 
 ## 系统模型
 
-第一版(LSTM,已实现):
+当前实现(LSTM + 真信道):
 
 ```
 源文本 s
   → Embedding + LSTM Encoder      → 语义状态 (hidden, cell)
-  → AWGN 信道(对语义状态加噪)     → 带噪状态
+  → Channel Encoder (FC)          → 发送信号 x
+  → 功率归一化 → AWGN 信道         → y = x + n
+  → Channel Decoder (FC)          → 恢复语义状态
   → LSTM Decoder + Linear         → 重建文本 ŝ
 
 评估:BLEU(s, ŝ) 随 SNR ∈ [-10, 20] dB 变化
 ```
+
+(早期还做过直接对 hidden/cell 加噪的 latent-noise 版作为对照,见 `experiments/`。)
 
 目标架构(DeepSC,第二版):
 
@@ -56,14 +61,16 @@
 - `experiments/lstm/noiseless/` — 无信道 baseline,对照数据量(20k / 50k)与模型容量(h256 / h512)
 - `experiments/lstm/awgn/hidden_only/` — AWGN 加在 hidden state,固定 10 dB 训练 vs 多 SNR 训练
 - `experiments/lstm/awgn/hidden_cell/` — AWGN 同时加在 hidden 与 cell state
+- `experiments/lstm/awgn/real_channel/` — 真信道(channel encoder/decoder + 功率归一化),channel_dim 消融(32–512)
 
 主要观察:
 
-- BLEU 随 SNR 升高而上升,符合「信道质量↑ → 语义恢复↑」的预期(固定 SNR 训练的模型最明显)
-- 多 SNR 训练显著提升低 SNR 条件下的鲁棒性
+- BLEU 随 SNR 升高而上升,符合「信道质量↑ → 语义恢复↑」的预期
+- 多 SNR 训练显著提升低 SNR 条件下的鲁棒性(hidden-only 多 SNR 曲线接近水平)
 - cell state 对 LSTM 重构至关重要:同时扰动 hidden 与 cell 时,低 SNR 下退化明显加重
+- 真信道下 channel_dim 存在速率-鲁棒性甜点(约 256);堵掉 cell 旁路后曲线更真实反映信道质量
 
-BLEU 用 sacrebleu(corpus 级)计算,与 DeepSC 等文献可比。BLEU-SNR 对比曲线:`experiments/lstm/awgn/bleu_snr_sacrebleu.png`
+BLEU 取值 0–1:早期实验用自写 corpus BLEU,real_channel 起改用 sacrebleu,两者已校准基本一致。真信道 channel_dim 消融对比图:`experiments/lstm/awgn/real_channel/snr_sweep_curve.png`
 
 ## 关键文献
 
@@ -80,7 +87,7 @@ BLEU 用 sacrebleu(corpus 级)计算,与 DeepSC 等文献可比。BLEU-SNR 对�
 ├── roadmap.md       阶段规划(项目执行地图)
 ├── code/            数据、模型、训练、评估、信道
 ├── notes/           文献精读笔记
-├── experiments/     实验结果,按「模型 / 信道 / 状态扰动方式 / 配置」组织
+├── experiments/     实验结果,按「模型 / 信道 / 信道实现方式 / 配置」组织
 └── specs/           各阶段任务说明
 ```
 
@@ -90,5 +97,3 @@ BLEU 用 sacrebleu(corpus 级)计算,与 DeepSC 等文献可比。BLEU-SNR 对�
 
 杜可正 — 中国传媒大学 信息与通信工程学院
 202311103060@mails.cuc.edu.cn
-</content>
-</invoke>
