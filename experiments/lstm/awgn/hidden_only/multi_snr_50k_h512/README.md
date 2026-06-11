@@ -107,3 +107,5 @@ multi-SNR 曲线在整个测试区间几乎水平，BLEU 始终稳定在 0.293 �
 ## 下一步
 
 下一步可以在 cell state 上也加入 AWGN 噪声，观察同时扰动 hidden state 和 cell state 后，模型在不同 SNR 条件下的重构性能是否会进一步下降。
+
+> 实现补注（2026-06-11）：本实验对内部状态直接加噪、无功率归一化，AWGNChannel 的 signal_power 未 detach 在此设置下有微弱影响；影响面分析见 [experiments/README.md](../../../../README.md) 的「信道实现细节」——本组结论为同实现 A/B 对照，不受影响。

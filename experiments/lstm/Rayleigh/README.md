@@ -20,7 +20,7 @@ AWGN 只有加性噪声,是理想化的有线/视距场景。真实无线环境�
 ## 实现要点(code/channel.py · RayleighChannel)
 
 - 输入 [B, n] 实信号(n 为偶数),`view_as_complex` 前需 `.contiguous()`
-- 信号功率统计用 `.detach()`(梯度不穿过功率估计)
+- 信号功率统计用 `.detach()`(噪声功率是环境量,梯度不应穿过功率估计;更早写的 AWGNChannel 未 detach,影响分析见 [experiments/README.md](../../README.md) 的「信道实现细节」)
 - 其余链路(LSTM、channel encoder/decoder、功率归一化)与 AWGN 真信道版完全一致,唯一变量是信道层,保证两条曲线可直接对比
 
 ## 训练设置

@@ -49,3 +49,11 @@ checkpoint(.pt)用于本地复现和继续评估,不上传 GitHub。
 ## BLEU 口径
 
 BLEU 取值 0–1。早期实验(noiseless / hidden_only / hidden_cell)用自写 corpus 级 BLEU 计算;之后用 sacrebleu(tokenize=none)逐组校准,两者数值基本一致(各目录 `sacrebleu_results.txt`,对比曲线 `awgn/bleu_snr_sacrebleu.png`)。从 real_channel 起直接采用 sacrebleu。
+
+## 信道实现细节:AWGN 的 signal_power 未 detach
+
+`RayleighChannel` 对信号功率估计做了 `.detach()`——噪声功率是环境量,不应有梯度流过;`AWGNChannel` 写得更早,漏了这一步,事后发现(2026-06-11),影响面分析如下:
+
+- **real_channel / Rayleigh 实验:不受影响。** 上游 `power_normalize` 把每样本功率钉死为常数,经 signal_power 的假梯度支路恒近零。
+- **早期 latent-noise 实验(hidden_only / hidden_cell):支路有效,但结论不受影响。** 噪声功率与信号功率等比例绑定(SNR 恒定),模型无法借该支路改变相对噪声水平、不存在性能注水;它只引入一个被大张量均值(约 5 万元素)稀释的微弱尺度压力。且这批实验的结论均为同实现 A/B 对照(固定 vs 多 SNR、hidden vs hidden+cell),两臂瑕疵相同,相对结论成立。
+- **处理:不回改 `AWGNChannel`**(改动梯度细节会破坏与已有实验线的严格可比性);后续新写信道代码时,环境量一律 detach。

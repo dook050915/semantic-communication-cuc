@@ -132,3 +132,5 @@ cell state 对 LSTM 句子重构至关重要。相比只扰动 hidden state，�
 - 进一步区分“模型内部状态扰动”和“真实信道传输信号扰动”
 
 其中最后一点已在 `real_channel` 实验中实现：在 Encoder 和 Decoder 之间加入 channel encoder/decoder 与功率归一化，把语义当作真正受功率约束的发送信号过信道，而不再直接对内部状态加噪。详见 `experiments/lstm/awgn/real_channel/`。
+
+> 实现补注（2026-06-11）：本实验对内部状态直接加噪、无功率归一化，AWGNChannel 的 signal_power 未 detach 在此设置下有微弱影响；影响面分析见 [experiments/README.md](../../../../README.md) 的「信道实现细节」——本组结论为同实现 A/B 对照，不受影响。

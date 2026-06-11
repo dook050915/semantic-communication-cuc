@@ -100,3 +100,5 @@ SNR sweep 结果显示，随着 SNR 从 -10 dB 提高到 20 dB，test loss 总�
 后续可以尝试多 SNR 训练，或者在 hidden state 和 cell state 上同时加入噪声，观察模型在更强信道扰动下的重构性能。
 
 这两个方向都已完成：多 SNR 训练见 `../multi_snr_50k_h512/`，hidden + cell 同时加噪见 `../../hidden_cell/multi_snr_50k_h512/`。
+
+> 实现补注（2026-06-11）：本实验对内部状态直接加噪、无功率归一化，AWGNChannel 的 signal_power 未 detach 在此设置下有微弱影响；影响面分析见 [experiments/README.md](../../../../README.md) 的「信道实现细节」——本组结论为同实现 A/B 对照，不受影响。
