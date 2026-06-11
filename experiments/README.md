@@ -39,7 +39,7 @@ experiments/
 
 ## 每个实验目录的文件
 
-- `README.md`:实验目的、设置、结果和结论。`real_channel/` 的 5 组 channel_dim 消融由父目录 README 统一说明,子目录只存结果文件
+- `README.md`:实验目的、设置、结果和结论。真信道实验(`real_channel/` 的 5 组 channel_dim 消融、`Rayleigh/`)由父目录 README 统一说明,子目录只存结果文件
 - `snr_sweep_results.txt`:SNR 扫描指标;`snr_sweep_curve.png`:对应曲线
 - `train_log.txt`:训练日志;`vocab.json`:该实验词表
 - 部分目录另有 `results.json`(单点评估)与 `prediction_samples.txt`(重构样例)
