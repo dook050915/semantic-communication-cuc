@@ -46,7 +46,6 @@ batch_size = 96
 learning_rate = 1e-3
 epochs = 20
 snr_db = 10
-
 ```
 
 ## 实验结果
@@ -60,7 +59,7 @@ test_bleu = 0.2856
 
 BLEU 分数在 0 到 1 之间，越接近 1 表示模型生成的句子和参考句子越接近。
 
-与不加入噪声 相比：
+与无噪声版相比：
 
 ```text
 50k_h512 test_loss = 2.4322, test_BLEU = 0.2867

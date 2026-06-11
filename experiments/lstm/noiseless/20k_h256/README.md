@@ -18,6 +18,12 @@
 - 去除 Europarl 标签行
 - 去除空行和括号形式的舞台说明
 
+本次实验使用的 processed 数据文件：
+
+```text
+data/processed/europarl_en_20k.txt
+```
+
 ## 模型
 
 模型使用 LSTM Encoder-Decoder。
