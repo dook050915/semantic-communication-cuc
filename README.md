@@ -94,7 +94,7 @@ BLEU 用 sacrebleu(corpus 级,tokenize=none),取值 0–1;早期实验用自写 
 
 1. Xie, Qin, Li, Juang. *Deep Learning Enabled Semantic Communication Systems*. IEEE TSP 2021.(DeepSC)
 2. Farsad, Rao, Goldsmith. *Deep Learning for Joint Source-Channel Coding of Text*. ICASSP 2018.
-3. O'Shea, Hoydis. *An Introduction to Deep Learning for the Physical Layer*. IEEE TCCN 2017.
+3. O'Shea, Hoydis. *An Introduction to Deep Learning for the Physical Layer*. IEEE TCCN 2017.（[精读笔记](notes/oshea-2017.md)）
 
 ## 代码结构
 
