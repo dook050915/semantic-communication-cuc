@@ -64,7 +64,7 @@
 
 ## 复现
 
-环境:Python 3.10+,`pip install -r requirements.txt`。
+环境:Python 3.11,`pip install -r requirements.txt`。
 
 ```bash
 # 1. 数据:下载 Europarl v7 英文语料(https://www.statmt.org/europarl/),
@@ -106,7 +106,7 @@ BLEU 用 sacrebleu(corpus 级,tokenize=none),取值 0–1;早期实验用自写 
 └── experiments/     实验结果,按「模型 / 信道 / 信道实现方式 / 配置」组织
 ```
 
-技术栈:Python 3.10 · PyTorch · sacrebleu · matplotlib
+技术栈:Python 3.11 · PyTorch · sacrebleu · matplotlib
 
 ## Author
 
