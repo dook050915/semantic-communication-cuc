@@ -204,7 +204,7 @@ class TokenEncoder(nn.Module):
             batch_first=True,
             total_length=src_ids.size(1),
         )
-        return outputs
+        return outputs   
 
 
 class TokenAttentionDecoder(nn.Module):
@@ -298,10 +298,10 @@ class TokenSeq2Seq(nn.Module):
 
     
 
-    def transmit_tokens(self, encoder_outputs, snr_db=None):
+    def transmit_tokens(self, encoder_outputs, mask,snr_db=None):
         """把 encoder_outputs [B,T,H] 逐 token 送过信道。"""
         channel_symbols = self.channel_encoder(encoder_outputs)
-        channel_norm = sequence_power_normalize(channel_symbols)
+        channel_norm = sequence_power_normalize(channel_symbols,mask)
         if snr_db is not None:
             x = self.channel(channel_norm, snr_db)
         else:
@@ -314,7 +314,7 @@ class TokenSeq2Seq(nn.Module):
         mask = (src_ids != self.encoder.embedding.padding_idx)
         encoder_outputs = self.encoder(src_ids, src_lengths)
         if self.channel is not None:
-            received_outputs = self.transmit_tokens(encoder_outputs, snr_db)
+            received_outputs = self.transmit_tokens(encoder_outputs,mask, snr_db)
         else:
             received_outputs = encoder_outputs
         decoder_input = src_ids[:, :-1]

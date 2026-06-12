@@ -57,7 +57,7 @@ def main():
     eval_config = config.copy()
     set_seed(eval_config["seed"])
     eval_config["Predict"] = "predict_token_batch"
-    eval_config['results_path'] = "experiments/lstm/awgn/real_channel/tokenSeq2Seq/multi_snr_50k_h512_c256_a256/snr_sweep_results.txt"
+    eval_config['results_path'] = "experiments/lstm/awgn/real_channel/tokenSeq2Seq/multi_snr_50k_h512_c16_a128/snr_sweep_results.txt"
 
     if eval_config["use_channel"]:
         channel = channel_types[eval_config["channel_type"]]()
@@ -66,6 +66,8 @@ def main():
     
     sentences = load_training_sentences(eval_config)
     train_sentences, val_sentences, test_sentences = split_sentences(sentences, train_ratio=eval_config["train_ratio"], val_ratio=eval_config["val_ratio"], seed=eval_config["seed"])
+
+
 
     vocab_path = resolve_path(eval_config["vocab_path"])
     word2idx, idx2word = load_vocab(str(vocab_path))

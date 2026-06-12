@@ -167,17 +167,17 @@ def greedy_decode_token(model, sentence, word2idx, idx2word, max_len=32, snr_db=
     ids = encode(sentence, word2idx)
     src_lengths = torch.tensor([len(ids)], dtype=torch.long).cpu()
     src_ids = torch.tensor(ids, dtype=torch.long).unsqueeze(0).to(device)
-
+    mask = (src_ids!=word2idx["<PAD>"])
     with torch.no_grad():
         outputs = model.encoder(src_ids, src_lengths)
         if model.channel is not None:
-            outputs = model.transmit_tokens(outputs,     snr_db=snr_db)
+            outputs = model.transmit_tokens(outputs,mask,     snr_db=snr_db,)
         decoder_input = torch.tensor(
             [[word2idx["<SOS>"]]], dtype=torch.long, device=device
         )
         generated_ids = []
         hidden, cell = model.decoder.init_state(1, device)
-        mask = (src_ids!=word2idx["<PAD>"])
+        
         for _ in range(max_len):
 
             logits, (hidden, cell) = model.decoder.step(decoder_input, hidden, cell, outputs, mask)
@@ -198,14 +198,15 @@ def greedy_decode_batch_token(model, loader, word2idx, idx2word, max_len=32, snr
         for src_ids, lengths in loader:          
             src_ids = src_ids.to(device)
             lengths = lengths.cpu()
+            mask = (src_ids!=word2idx["<PAD>"])
             outputs = model.encoder(src_ids, lengths)
             hidden,cell = model.decoder.init_state(src_ids.shape[0], device)
             if model.channel is not None:
-                outputs = model.transmit_tokens(outputs,     snr_db=snr_db)
+                outputs = model.transmit_tokens(outputs,mask,    snr_db=snr_db)
             decoder_input = torch.full((src_ids.shape[0],1), word2idx["<SOS>"], dtype=torch.long, device=device)
             finished = torch.tensor([False]*src_ids.shape[0], dtype=torch.bool, device=device)
             generated_ids = torch.full((src_ids.shape[0], max_len), word2idx["<PAD>"], dtype=torch.long, device=device)
-            mask = (src_ids!=word2idx["<PAD>"])
+            
             for i in range(max_len):
                 logits, (hidden, cell) = model.decoder.step(decoder_input, hidden, cell, outputs, mask)
                 next_ids = logits[:, -1, :].argmax(dim=1)

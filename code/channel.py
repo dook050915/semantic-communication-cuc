@@ -8,11 +8,14 @@ def power_normalize(x, eps=1e-8):
     P = x.pow(2).mean(dim=1, keepdim=True)
     return x / torch.sqrt(P + eps)
 
-def sequence_power_normalize(x, eps=1e-8):
+def sequence_power_normalize(x,mask, eps=1e-8):
     """发射功率约束:把每个样本的发送向量归一化到平均功率=1。
     x: [batch,t,n] 发送信号；返回同形状,逐样本平均功率=1,梯度可穿过。
     """
-    P = x.pow(2).mean(dim=(1,2),keepdim=True)
+    count = mask.sum(dim=1,keepdim=True)*x.size(2)
+    mask = mask.unsqueeze(-1).to(x.dtype)
+    x = x * mask
+    P = x.pow(2).sum(dim=(1,2),keepdim=True)/(count.unsqueeze(-1))
     return x / torch.sqrt(P + eps)
 
 
@@ -42,10 +45,9 @@ class AWGNChannel(nn.Module):
         if snr_db is None:
             return x
 
-        signal_power = x.pow(2).mean()
         snr_linear = 10 ** (snr_db / 10)
-        noise_power = signal_power / snr_linear
-        noise_std = noise_power.sqrt()
+        noise_power = 1 / snr_linear # 假设输入已功率归一化
+        noise_std = noise_power**0.5
         
         noise = torch.randn_like(x) * noise_std
         noisy_x = x + noise
