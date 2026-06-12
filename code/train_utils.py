@@ -122,7 +122,6 @@ def greedy_decode(model, sentence, word2idx, idx2word, max_len=32, snr_db=None):
     return decode(generated_ids, idx2word)
 
 def greedy_decode_batch(model, loader, word2idx, idx2word, max_len=32, snr_db=None):
-    # 准备:model.eval();device;no_grad;all_preds=[]
     model.eval()
     device = next(model.parameters()).device
     all_preds = []
@@ -149,7 +148,76 @@ def greedy_decode_batch(model, loader, word2idx, idx2word, max_len=32, snr_db=No
         
     return all_preds
             
-            
+def greedy_decode_token(model, sentence, word2idx, idx2word, max_len=32, snr_db=None):
+    """用贪心策略推理：每一步选择概率最高的 token 作为下一个词。
+
+    编码后:
+        ids: list [seq_len]
+        src_ids: LongTensor [1, seq_len]
+        src_lengths: LongTensor [1]
+    每一步:
+        decoder_input: LongTensor [1, 1]
+        logits: [1, 1, vocab_size]
+        logits[:, -1, :]: [1, vocab_size]
+        next_id: Python int
+    """
+    model.eval()
+    device = next(model.parameters()).device
+
+    ids = encode(sentence, word2idx)
+    src_lengths = torch.tensor([len(ids)], dtype=torch.long).cpu()
+    src_ids = torch.tensor(ids, dtype=torch.long).unsqueeze(0).to(device)
+
+    with torch.no_grad():
+        outputs = model.encoder(src_ids, src_lengths)
+        if model.channel is not None:
+            outputs = model.transmit_tokens(outputs,     snr_db=snr_db)
+        decoder_input = torch.tensor(
+            [[word2idx["<SOS>"]]], dtype=torch.long, device=device
+        )
+        generated_ids = []
+        hidden, cell = model.decoder.init_state(1, device)
+        mask = (src_ids!=word2idx["<PAD>"])
+        for _ in range(max_len):
+
+            logits, (hidden, cell) = model.decoder.step(decoder_input, hidden, cell, outputs, mask)
+            next_id = logits[:, -1, :].argmax().item()
+            if next_id == word2idx["<EOS>"]:
+                break
+
+            generated_ids.append(next_id)
+            decoder_input = torch.tensor([[next_id]], dtype=torch.long, device=device)
+
+    return decode(generated_ids, idx2word)
+
+def greedy_decode_batch_token(model, loader, word2idx, idx2word, max_len=32, snr_db=None):
+    model.eval()
+    device = next(model.parameters()).device
+    all_preds = []
+    with torch.no_grad():
+        for src_ids, lengths in loader:          
+            src_ids = src_ids.to(device)
+            lengths = lengths.cpu()
+            outputs = model.encoder(src_ids, lengths)
+            hidden,cell = model.decoder.init_state(src_ids.shape[0], device)
+            if model.channel is not None:
+                outputs = model.transmit_tokens(outputs,     snr_db=snr_db)
+            decoder_input = torch.full((src_ids.shape[0],1), word2idx["<SOS>"], dtype=torch.long, device=device)
+            finished = torch.tensor([False]*src_ids.shape[0], dtype=torch.bool, device=device)
+            generated_ids = torch.full((src_ids.shape[0], max_len), word2idx["<PAD>"], dtype=torch.long, device=device)
+            mask = (src_ids!=word2idx["<PAD>"])
+            for i in range(max_len):
+                logits, (hidden, cell) = model.decoder.step(decoder_input, hidden, cell, outputs, mask)
+                next_ids = logits[:, -1, :].argmax(dim=1)
+                finished |=(next_ids==word2idx["<EOS>"])
+                if finished.all():
+                    break
+                decoder_input = next_ids.unsqueeze(1)
+                generated_ids[:, i] = next_ids
+            for gen_id in generated_ids:
+                all_preds.append(decode(gen_id, idx2word))
+        
+    return all_preds
 
 
 def save_checkpoint(model, optimizer, epoch, train_loss, val_loss, config, vocab_path, path):
@@ -178,3 +246,9 @@ def load_checkpoint(model, optimizer, path, map_location="cpu"):
     if optimizer is not None:
         optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
     return checkpoint
+
+Predict = {"predict_token":greedy_decode_token,
+          "predict_token_batch":greedy_decode_batch_token,
+          "predict_seq":greedy_decode,
+          "predict_seq_batch":greedy_decode_batch,
+          }

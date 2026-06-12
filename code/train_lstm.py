@@ -14,11 +14,11 @@ from data_utils import (
     save_vocab,
     split_sentences,
 )
-from model import Decoder, Encoder, Seq2Seq
+from model import Encoders, Decoders, Models
 from train_utils import (
     evaluate_loss,
     get_device,
-    greedy_decode,
+    Predict,
     save_checkpoint,
     set_seed,
     train_one_epoch,
@@ -40,18 +40,23 @@ config = {
     "val_ratio": 0.1,
     "embed_dim": 128,
     "hidden_dim": 512,
-    "channel_dim": 256,
+    "channel_dim": 128,
+    "attention_hdim": 128,
     "num_layers": 1,
     "batch_size": 96,
     "lr": 1e-3,
     "epochs": 20,
     "use_channel":True,
-    "channel_type":"Rayleigh",
+    "channel_type":"AWGN",
+    "encoder":"TokenEncoder",
+    "decoder":"TokenAttentionDecoder",
+    "Predict":"predict_token",
+    "model":"TokenSeq2Seq",
     "snr_db":10,
     "snr_list":[-10, -5, 0, 5, 10, 15, 20],
-    "vocab_path": "experiments/lstm/Rayleigh/multi_snr_50k_h512_c256/vocab.json",
-    "checkpoint_path": "experiments/lstm/Rayleigh/multi_snr_50k_h512_c256/checkpoint_epoch20.pt",
-    "best_checkpoint_path": "experiments/lstm/Rayleigh/multi_snr_50k_h512_c256/checkpoint_best.pt",
+    "vocab_path": "experiments/lstm/awgn/real_channel/tokenSeq2Seq/multi_snr_50k_h512_c128/vocab.json",
+    "checkpoint_path": "experiments/lstm/awgn/real_channel/tokenSeq2Seq/multi_snr_50k_h512_c128/checkpoint_epoch20.pt",
+    "best_checkpoint_path": "experiments/lstm/awgn/real_channel/tokenSeq2Seq/multi_snr_50k_h512_c128/checkpoint_best.pt",
 }
 
 
@@ -130,21 +135,22 @@ def main():
     config["vocab_size"] = vocab_size
     config["pad_idx"] = pad_idx
 
-    encoder = Encoder(
+    encoder = Encoders[config["encoder"]](
         vocab_size=vocab_size,
         embed_dim=config["embed_dim"],
         hidden_dim=config["hidden_dim"],
         num_layers=config["num_layers"],
         pad_idx=pad_idx,
     )
-    decoder = Decoder(
+    decoder = Decoders[config["decoder"]](
         vocab_size=vocab_size,
         embed_dim=config["embed_dim"],
         hidden_dim=config["hidden_dim"],
         num_layers=config["num_layers"],
         pad_idx=pad_idx,
+        attention_hdim=config["attention_hdim"]
     )
-    model = Seq2Seq(encoder, decoder,channel=channel,channel_dim=config["channel_dim"]).to(device)
+    model = Models[config["model"]](encoder, decoder,channel=channel,channel_dim=config["channel_dim"]).to(device)
 
     criterion = nn.CrossEntropyLoss(ignore_index=pad_idx)
     optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"])
@@ -191,7 +197,7 @@ def main():
 
     print("\nGreedy decode samples:")
     for sentence in train_sentences[:3]:
-        pred = greedy_decode(model, sentence, word2idx, idx2word, max_len=32,snr_db=config["snr_db"])
+        pred = Predict[config["Predict"]](model, sentence, word2idx, idx2word, max_len=32,snr_db=config["snr_db"])
         print("src :", sentence)
         print("pred:", pred)
         print()

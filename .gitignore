@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.env
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints
+
+
+# Data & checkpoints (don't commit large files)
+data/
+checkpoints/
+runs/
+logs/
+*.pt
+*.pth
+*.ckpt
+*.tar.gz
+*.zip
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Internal docs (local only, do not push)
+roadmap.md
+specs/
+progress_report.md
+calibration_report.md
+
+# Local scratch scripts
+code/test.py
+
+# Notes: local by default; only finished notes are published
+notes/*
+!notes/oshea-2017.md
+!notes/image.png

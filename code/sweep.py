@@ -9,9 +9,9 @@ from data_utils import (
     load_vocab,
     split_sentences,
 )
-from model import Encoder, Decoder, Seq2Seq
+from model import Encoders, Decoders, Models
 from train_lstm import config, load_training_sentences, resolve_path
-from train_utils import evaluate_loss, greedy_decode, load_checkpoint, get_device, set_seed,greedy_decode_batch
+from train_utils import evaluate_loss, Predict, load_checkpoint, get_device, set_seed
 from channel import channel_types
 
 
@@ -56,7 +56,8 @@ def main():
     device = get_device()
     eval_config = config.copy()
     set_seed(eval_config["seed"])
-    eval_config['results_path'] = "experiments/lstm/Rayleigh/multi_snr_50k_h512_c256/snr_sweep_results.txt"
+    eval_config["Predict"] = "predict_token_batch"
+    eval_config['results_path'] = "experiments/lstm/awgn/real_channel/tokenSeq2Seq/multi_snr_50k_h512_c128/snr_sweep_results.txt"
 
     if eval_config["use_channel"]:
         channel = channel_types[eval_config["channel_type"]]()
@@ -74,9 +75,11 @@ def main():
     test_dataset = TextDataset(test_sentences, word2idx)
     test_loader = DataLoader(test_dataset, batch_size=eval_config["batch_size"], shuffle=False, collate_fn=collate_fn)
 
-    encoder = Encoder(vocab_size, eval_config["embed_dim"], eval_config["hidden_dim"], eval_config["num_layers"], pad_idx)
-    decoder = Decoder(vocab_size, eval_config["embed_dim"], eval_config["hidden_dim"], eval_config["num_layers"], pad_idx)
-    model = Seq2Seq(encoder, decoder, channel, eval_config["channel_dim"])
+    encoder = Encoders[eval_config["encoder"]](vocab_size, eval_config["embed_dim"], eval_config["hidden_dim"], eval_config["num_layers"], pad_idx)
+
+    decoder = Decoders[eval_config["decoder"]](vocab_size, eval_config["embed_dim"], eval_config["hidden_dim"], eval_config["num_layers"], pad_idx, eval_config["attention_hdim"])
+
+    model = Models[eval_config["model"]](encoder, decoder, channel, eval_config["channel_dim"])
     model.to(device)
 
     criterion = nn.CrossEntropyLoss(ignore_index=pad_idx)
@@ -90,7 +93,7 @@ def main():
             eval_config["snr_db"] = snr
             test_loss = evaluate_loss(model, test_loader, criterion, device,snr_db=eval_config["snr_db"])
 
-            predictions = greedy_decode_batch(model, test_loader,  word2idx, idx2word, max_len=eval_config["max_len"]+2, snr_db=eval_config["snr_db"])
+            predictions = Predict[eval_config["Predict"]](model, test_loader,  word2idx, idx2word, max_len=eval_config["max_len"]+2, snr_db=eval_config["snr_db"])
             
             test_bleu = compute_bleu(test_sentences, predictions)
             print(f"test_loss: {test_loss:.4f}")
