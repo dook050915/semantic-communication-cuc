@@ -57,7 +57,7 @@ def main():
     eval_config = config.copy()
     set_seed(eval_config["seed"])
     eval_config["Predict"] = "predict_token_batch"
-    eval_config['results_path'] = "experiments/lstm/awgn/real_channel/tokenSeq2Seq/multi_snr_50k_h512_c256/snr_sweep_results.txt"
+    eval_config['results_path'] = "experiments/lstm/awgn/real_channel/tokenSeq2Seq/multi_snr_50k_h512_c256_a256/snr_sweep_results.txt"
 
     if eval_config["use_channel"]:
         channel = channel_types[eval_config["channel_type"]]()

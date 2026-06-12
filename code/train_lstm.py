@@ -41,7 +41,7 @@ config = {
     "embed_dim": 128,
     "hidden_dim": 512,
     "channel_dim": 256,
-    "attention_hdim": 128,
+    "attention_hdim": 256,
     "num_layers": 1,
     "batch_size": 96,
     "lr": 1e-3,
@@ -54,9 +54,9 @@ config = {
     "model":"TokenSeq2Seq",
     "snr_db":10,
     "snr_list":[-10, -5, 0, 5, 10, 15, 20],
-    "vocab_path": "experiments/lstm/awgn/real_channel/tokenSeq2Seq/multi_snr_50k_h512_c256/vocab.json",
-    "checkpoint_path": "experiments/lstm/awgn/real_channel/tokenSeq2Seq/multi_snr_50k_h512_c256/checkpoint_epoch20.pt",
-    "best_checkpoint_path": "experiments/lstm/awgn/real_channel/tokenSeq2Seq/multi_snr_50k_h512_c256/checkpoint_best.pt",
+    "vocab_path": "experiments/lstm/awgn/real_channel/tokenSeq2Seq/multi_snr_50k_h512_c256_a256/vocab.json",
+    "checkpoint_path": "experiments/lstm/awgn/real_channel/tokenSeq2Seq/multi_snr_50k_h512_c256_a256/checkpoint_epoch20.pt",
+    "best_checkpoint_path": "experiments/lstm/awgn/real_channel/tokenSeq2Seq/multi_snr_50k_h512_c256_a256/checkpoint_best.pt",
 }
 
 
