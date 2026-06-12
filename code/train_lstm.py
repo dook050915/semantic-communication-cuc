@@ -160,7 +160,6 @@ def main():
 
     for epoch in range(config["epochs"]):
         train_loss = train_one_epoch(model, train_loader, criterion, optimizer, device,config["snr_db"],config["snr_list"])
-        train_eval_loss = evaluate_loss(model, train_loader, criterion, device,config["snr_db"])
         val_loss = evaluate_loss(model, val_loader, criterion, device,config["snr_db"])
 
         if val_loss < best_val_loss:
@@ -179,7 +178,6 @@ def main():
         print(
             f"Epoch {epoch + 1}/{config['epochs']}, "
             f"Train Loss: {train_loss:.4f}, "
-            f"Train Eval Loss: {train_eval_loss:.4f}, "
             f"Val Loss: {val_loss:.4f}"
         )
 
