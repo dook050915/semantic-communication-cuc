@@ -70,20 +70,31 @@ class RayleighChannel(nn.Module):
     def forward(self, x, snr_db):
         if snr_db is None:
             return x
-
-        B, n = x.shape
         snr_linear = 10 ** (snr_db / 10)
-        xc = torch.view_as_complex(x.reshape(B,n//2,2).contiguous())
-        signal_power = xc.abs().pow(2).mean()
-        N0 = signal_power.detach() / snr_linear
-        h = torch.randn(B,n//2,dtype=torch.complex64,device=x.device) 
-        noise = torch.sqrt(N0) * torch.randn(B,n//2,dtype=torch.complex64,device=x.device)
-        yc = h * xc + noise
-        yc = yc/h
+        if x.dim() == 2:
+            B, n = x.shape
+            xc = torch.view_as_complex(x.reshape(B,n//2,2).contiguous())
+            signal_power = xc.abs().pow(2).mean()
+            N0 = signal_power.detach() / snr_linear
+            h = torch.randn(B,n//2,dtype=torch.complex64,device=x.device) 
+            noise = torch.sqrt(N0) * torch.randn(B,n//2,dtype=torch.complex64,device=x.device)
+            yc = h * xc + noise
+            yc = yc/h
 
-        y = torch.view_as_real(yc).reshape(B, n).contiguous()
-        return y
+            y = torch.view_as_real(yc).reshape(B, n).contiguous()
+            return y
+        if x.dim() == 3:
+            B,T,C = x.shape
+            xc = torch.view_as_complex(x.reshape(B,T,C//2,2).contiguous())
+            N0 = 2/snr_linear # 假设输入已功率归一化
+            h = torch.randn((B,T,C//2),dtype=torch.complex64,device=x.device) 
+            noise = torch.randn((B,T,C//2),dtype=torch.complex64,device=x.device) * N0**0.5
+            yc = h * xc + noise
+            yc = yc/h
 
+            y = torch.view_as_real(yc).reshape(B,T,C).contiguous()
+            return y
+    
 
 channel_types = {
     "AWGN": AWGNChannel,

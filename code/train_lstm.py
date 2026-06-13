@@ -47,16 +47,16 @@ config = {
     "lr": 1e-3,
     "epochs": 20,
     "use_channel":True,
-    "channel_type":"AWGN",
+    "channel_type":"Rayleigh",
     "encoder":"TokenEncoder",
     "decoder":"TokenAttentionDecoder",
     "Predict":"predict_token",
     "model":"TokenSeq2Seq",
     "snr_db":10,
     "snr_list":[-10, -5, 0, 5, 10, 15, 20],
-    "vocab_path": "experiments/lstm/awgn/real_channel/tokenSeq2Seq/multi_snr_50k_h512_c128_a128/vocab.json",
-    "checkpoint_path": "experiments/lstm/awgn/real_channel/tokenSeq2Seq/multi_snr_50k_h512_c128_a128/checkpoint_epoch20.pt",
-    "best_checkpoint_path": "experiments/lstm/awgn/real_channel/tokenSeq2Seq/multi_snr_50k_h512_c128_a128/checkpoint_best.pt",
+    "vocab_path": "experiments/lstm/Rayleigh/tokenSeq2Seq/multi_snr_50k_h512_c16_a128/vocab.json",
+    "checkpoint_path": "experiments/lstm/Rayleigh/tokenSeq2Seq/multi_snr_50k_h512_c16_a128/checkpoint_epoch20.pt",
+    "best_checkpoint_path": "experiments/lstm/Rayleigh/tokenSeq2Seq/multi_snr_50k_h512_c16_a128/checkpoint_best.pt",
 }
 
 
