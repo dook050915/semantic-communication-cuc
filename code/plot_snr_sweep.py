@@ -34,12 +34,18 @@ def plot_loss_bleu(series, title, save_path):
             data["snr"],
             data["loss"],
             marker=item.get("marker", "o"),
+            color=item.get("color"),
+            linestyle=item.get("linestyle", "-"),
+            linewidth=2,
             label=item["label"],
         )
         axs[1].plot(
             data["snr"],
             data["bleu"],
             marker=item.get("marker", "o"),
+            color=item.get("color"),
+            linestyle=item.get("linestyle", "-"),
+            linewidth=2,
             label=item["label"],
         )
 
@@ -150,6 +156,60 @@ def main():
         ],
         "Rayleigh TokenSeq2Seq c16_a128 vs StateSeq2Seq c256",
         rayleigh_token_base / "rayleigh_token_c16_a128_vs_state_c256.png",
+    )
+
+    plot_loss_bleu(
+        [
+            {
+                "label": "AWGN TokenSeq2Seq c256",
+                "data": token_c256_a128,
+                "marker": "o",
+                "color": "tab:blue",
+            },
+            {
+                "label": "Rayleigh TokenSeq2Seq c256",
+                "data": rayleigh_token_c256_a128,
+                "marker": "^",
+                "color": "tab:orange",
+            },
+        ],
+        "AWGN vs Rayleigh at TokenSeq2Seq c256",
+        rayleigh_token_base / "token_awgn_vs_rayleigh_c256_a128.png",
+    )
+
+    plot_loss_bleu(
+        [
+            {
+                "label": "AWGN StateSeq2Seq c256",
+                "data": state_c256,
+                "marker": "s",
+                "color": "tab:blue",
+                "linestyle": "--",
+            },
+            {
+                "label": "AWGN TokenSeq2Seq c256",
+                "data": token_c256_a128,
+                "marker": "o",
+                "color": "tab:blue",
+                "linestyle": "-",
+            },
+            {
+                "label": "Rayleigh StateSeq2Seq c256",
+                "data": rayleigh_state_c256,
+                "marker": "s",
+                "color": "tab:orange",
+                "linestyle": "--",
+            },
+            {
+                "label": "Rayleigh TokenSeq2Seq c256",
+                "data": rayleigh_token_c256_a128,
+                "marker": "o",
+                "color": "tab:orange",
+                "linestyle": "-",
+            },
+        ],
+        "LSTM c256 Overview: Channel Type vs Transmission Granularity",
+        Path("experiments/lstm/c256_channel_granularity_overview.png"),
     )
 
 
