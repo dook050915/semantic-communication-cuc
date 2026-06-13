@@ -36,7 +36,7 @@ Encoder 将输入句子编码为 hidden state 和 cell state；Decoder 使用这
 
 当前版本没有 attention。
 
-## 超参数
+## 训练设置
 
 ```text
 embedding_dim = 128
@@ -68,7 +68,7 @@ awgn_hidden_only_50k_h512 test_loss = 2.4398, test_BLEU = 0.2856
 
 与不加入噪声版相比，加入噪声后，test_loss略微升高，BLEU略微下降，但下降幅度不大，说明经过训练后，模型有了一定的抗噪声性能，且与无噪声的性能差异较小。
 
-## 结果观察
+## 结论
 
 10 dB 下 AWGN 结果和无噪声结果接近，当时判断是 hidden-level 表征对轻度噪声有一定鲁棒性。
 
