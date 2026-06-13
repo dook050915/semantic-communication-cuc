@@ -1,4 +1,4 @@
-# LSTM AWGN hidden-only 句子重构实验（50k, hidden_dim=512, SNR=10 dB）
+# LSTM 语义通信 · AWGN hidden-only 固定 SNR=10 dB(50k, hidden_dim=512)
 
 ## 实验目的
 

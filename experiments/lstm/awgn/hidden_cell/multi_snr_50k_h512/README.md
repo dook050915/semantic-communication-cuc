@@ -1,4 +1,4 @@
-# LSTM AWGN hidden + cell 多 SNR 训练实验（50k, hidden_dim=512）
+# LSTM 语义通信 · AWGN hidden+cell 多 SNR(50k, hidden_dim=512)
 
 ## 实验目的
 
