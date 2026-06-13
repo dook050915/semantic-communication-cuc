@@ -63,21 +63,25 @@ def plot_loss_bleu(series, title, save_path):
 
 
 def main():
-    base = Path("experiments/lstm/awgn/real_channel")
-    token_base = base / "tokenSeq2Seq"
-    state_base = base / "stateSeq2Seq"
+    awgn_base = Path("experiments/lstm/awgn/real_channel")
+    awgn_token_base = awgn_base / "tokenSeq2Seq"
+    awgn_state_base = awgn_base / "stateSeq2Seq"
+
+    rayleigh_base = Path("experiments/lstm/Rayleigh")
+    rayleigh_token_base = rayleigh_base / "tokenSeq2Seq"
+    rayleigh_state_base = rayleigh_base / "stateSeq2Seq"
 
     token_c16_a128 = load_snr_results(
-        token_base / "multi_snr_50k_h512_c16_a128" / "snr_sweep_results.txt"
+        awgn_token_base / "multi_snr_50k_h512_c16_a128" / "snr_sweep_results.txt"
     )
     token_c128_a128 = load_snr_results(
-        token_base / "multi_snr_50k_h512_c128_a128" / "snr_sweep_results.txt"
+        awgn_token_base / "multi_snr_50k_h512_c128_a128" / "snr_sweep_results.txt"
     )
     token_c256_a128 = load_snr_results(
-        token_base / "multi_snr_50k_h512_c256_a128" / "snr_sweep_results.txt"
+        awgn_token_base / "multi_snr_50k_h512_c256_a128" / "snr_sweep_results.txt"
     )
     state_c256 = load_snr_results(
-        state_base / "multi_snr_50k_h512_c256" / "snr_sweep_results.txt"
+        awgn_state_base / "multi_snr_50k_h512_c256" / "snr_sweep_results.txt"
     )
 
     plot_loss_bleu(
@@ -94,7 +98,7 @@ def main():
             },
         ],
         "TokenSeq2Seq c256_a128: Before vs After Power Mask Fix",
-        token_base / "c256_a128_v1_vs_masked.png",
+        awgn_token_base / "c256_a128_v1_vs_masked.png",
     )
 
     plot_loss_bleu(
@@ -104,7 +108,7 @@ def main():
             {"label": "c256_a128", "data": token_c256_a128, "marker": "^"},
         ],
         "AWGN TokenSeq2Seq Channel Dimension Sweep",
-        token_base / "token_channel_dim_sweep_a128.png",
+        awgn_token_base / "token_channel_dim_sweep_a128.png",
     )
 
     plot_loss_bleu(
@@ -113,7 +117,39 @@ def main():
             {"label": "StateSeq2Seq c256", "data": state_c256, "marker": "s"},
         ],
         "TokenSeq2Seq c16_a128 vs StateSeq2Seq c256",
-        token_base / "token_c16_a128_vs_state_c256.png",
+        awgn_token_base / "token_c16_a128_vs_state_c256.png",
+    )
+
+    rayleigh_token_c16_a128 = load_snr_results(
+        rayleigh_token_base / "multi_snr_50k_h512_c16_a128" / "snr_sweep_results.txt"
+    )
+    rayleigh_token_c256_a128 = load_snr_results(
+        rayleigh_token_base / "multi_snr_50k_h512_c256_a128" / "snr_sweep_results.txt"
+    )
+    rayleigh_state_c256 = load_snr_results(
+        rayleigh_state_base / "multi_snr_50k_h512_c256" / "snr_sweep_results.txt"
+    )
+
+    plot_loss_bleu(
+        [
+            {"label": "c16_a128", "data": rayleigh_token_c16_a128, "marker": "o"},
+            {"label": "c256_a128", "data": rayleigh_token_c256_a128, "marker": "^"},
+        ],
+        "Rayleigh TokenSeq2Seq Channel Dimension Comparison",
+        rayleigh_token_base / "rayleigh_token_c16_vs_c256_a128.png",
+    )
+
+    plot_loss_bleu(
+        [
+            {
+                "label": "TokenSeq2Seq c16_a128",
+                "data": rayleigh_token_c16_a128,
+                "marker": "o",
+            },
+            {"label": "StateSeq2Seq c256", "data": rayleigh_state_c256, "marker": "s"},
+        ],
+        "Rayleigh TokenSeq2Seq c16_a128 vs StateSeq2Seq c256",
+        rayleigh_token_base / "rayleigh_token_c16_a128_vs_state_c256.png",
     )
 
 
