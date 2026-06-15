@@ -48,7 +48,7 @@
 
 ### Q2. Figure 1 — Autoencoder 视角下的通信系统由几部分组成？
 
-![Figure 1：自编码器视角的通信系统结构](image.png)
+![Figure 1：自编码器视角的通信系统结构](oshea流程图美化版.png)
 
 ### Q3. 把"通信系统"映射成 Autoencoder 后，loss function 是什么？为什么这么选？
 

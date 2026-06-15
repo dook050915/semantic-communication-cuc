@@ -46,5 +46,8 @@ code/test.py
 
 # Notes: local by default; only finished notes are published
 notes/*
+!notes/README.md
 !notes/oshea-2017.md
-!notes/image.png
+!notes/oshea流程图美化版.png
+!notes/deepsc-2021.md
+!notes/deepsc流程图美化版.png
