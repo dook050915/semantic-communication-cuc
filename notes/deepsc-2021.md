@@ -2,20 +2,8 @@
 
 > **Paper**: H. Xie, Z. Qin, G. Y. Li, B.-H. Juang. _Deep Learning Enabled Semantic Communication Systems_. IEEE Trans. Signal Processing, 2021. (arXiv:2006.10685v3)
 > **PDF**: `papers/DeepSC_Xie2021.pdf`
-> **读完时间**: 待填
+> **读完时间**: 2026-06-15
 
----
-
-## 阅读策略提醒
-
-**第一版 LSTM baseline 已完成**（token 级 + additive attention、AWGN + Rayleigh、channel_dim 消融、速率对齐对照都跑完了）。现在读 DeepSC 不再是"为第一版抽取信息、砍掉增强项"，而是**为搭 Transformer v2 读透架构、并决定哪些增强项真要上**。重点随之变了：
-
-- **Transformer 架构变成核心必读**（不再是可砍项）：层数 / 头数 / d_model / FFN 维度、positional encoding、channel encoder 输出维度——这些是 v2 的配置依据，要能直接抄进代码（Table I + Sec IV-A / V-A）。
-- **MI loss 从"先不要"变成真实决策**：v2 到底加不加 MI？读 Q5/Q6/Q10，看它带来的增益（Fig 9 的 4dB vs 9dB）值不值这套两阶段训练 + MINE 网络的复杂度。这是要你做判断、不是默认跳过。
-- **sentence similarity（BERT）同理**：要不要作为 v2 的第二评价指标？读 Q7,权衡"更贴语义"和"引入 BERT 依赖"。
-- 对照已完成的 baseline 读：你已经亲手写过 encoder/decoder/信道/功率归一化/attention，DeepSC 的每个模块都能在你代码里找到对应物——**用代码锚论文**，差异处（self-attention 替代循环、positional encoding、MI loss）就是 v2 要新增的清单。
-
----
 
 ## 第一遍 — 30 分钟（摸地图）
 
@@ -116,9 +104,6 @@
 
 ### Q11. DeepSC 跟 OShea 2017 最大的相似点和不同点？
 
-> 提示：架构骨架几乎一样（Encoder-Channel-Decoder），但 OShea 传 bit，DeepSC 传 token；OShea loss 是 BER（分类 CE），DeepSC loss 是 CE+MI。
-> 层次差异（Level A vs Level B）已在上面摸地图三问 1 写过，这里补全模块级对照。
-
 **相似点**：
 
 - 都是端到端通信系统，联合优化收发机
@@ -162,8 +147,6 @@
 6. **传统基线对照（Huffman/Brotli + Turbo/RS）**：重要但靠后。缺它无法谈"semantic vs traditional"，但纯通信工程活、无 DL 含量，已决定排在 Transformer 之后。
 
 ### Q14. 复现 DeepSC 的关键超参 / 配置，从 Table I 和 Sec V-A 能抄到哪些？
-
-> 提示：数据集（Europarl，句长 4-30 词）、Transformer 层数（3 层 8 头 128 维）、channel encoder 输出维度（16）、batch、学习率（0.001 vs 0.002 的对照见 Fig 10/11）。
 
 答：
 

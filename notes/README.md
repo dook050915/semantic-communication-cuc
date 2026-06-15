@@ -10,5 +10,5 @@
 
 ## 笔记进度
 
-- `oshea-2017.md` — O'Shea & Hoydis, *An Introduction to Deep Learning for the Physical Layer*, IEEE TCCN 2017（基本完成，Q9/Q10 待补）
-- `deepsc-2021.md` — Xie et al., *Deep Learning Enabled Semantic Communication Systems*, IEEE TSP 2021（已完成，三遍法 + v2 复现要点）
+- `oshea-2017.md` — O'Shea & Hoydis, *An Introduction to Deep Learning for the Physical Layer*, IEEE TCCN 2017（已完成，2026-05-28）
+- `deepsc-2021.md` — Xie et al., *Deep Learning Enabled Semantic Communication Systems*, IEEE TSP 2021（已完成，2026-06-15；三遍法 + v2 复现要点）
