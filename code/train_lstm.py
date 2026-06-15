@@ -150,7 +150,7 @@ def main():
         pad_idx=pad_idx,
         attention_hdim=config["attention_hdim"]
     )
-    model = Models[config["model"]](encoder, decoder,channel=channel,channel_dim=config["channel_dim"]).to(device)
+    model = Models[config["model"]](encoder, decoder, channel=channel, channel_dim=config["channel_dim"]).to(device)
 
     criterion = nn.CrossEntropyLoss(ignore_index=pad_idx)
     optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"])

@@ -87,8 +87,8 @@ class Decoder(nn.Module):
 class Seq2Seq(nn.Module):
     """完整 Seq2Seq 模型：Encoder 读原句，可选信道扰动 hidden，Decoder 重构原句。"""
 
-    def __init__(self, encoder, decoder, channel=None,channel_dim=128):
-        """把已经定义好的 encoder 和 decoder 组合起来。"""
+    def __init__(self, encoder, decoder, channel=None, channel_dim=128):
+        """把已经定义好的 encoder 和 decoder 组合起来，并建立信道编解码线性层。"""
         super().__init__()
         self.encoder = encoder
         self.decoder = decoder
@@ -136,8 +136,10 @@ class Seq2Seq(nn.Module):
         return logits, decoder_target
 
 class AdditiveAttention(nn.Module):
-    """Additive Attention 层。"""
-    def __init__(self, key_dim, query_dim,hidden_dim):
+    """Additive (Bahdanau) Attention 层：用 tanh(W_k·k + W_q·q) 打分，再加权求 context。"""
+
+    def __init__(self, key_dim, query_dim, hidden_dim):
+        """定义把 key/query 投到打分空间的三个线性层（均无 bias）。"""
         super().__init__()
         self.W_k = nn.Linear(key_dim, hidden_dim, bias=False)
         self.W_q = nn.Linear(query_dim, hidden_dim, bias=False)
@@ -176,6 +178,7 @@ class TokenEncoder(nn.Module):
     """
 
     def __init__(self, vocab_size, embed_dim, hidden_dim, num_layers=1, pad_idx=0):
+        """定义 embedding 层和 LSTM 层（与旧 Encoder 相同，只是 forward 返回整条序列）。"""
         super().__init__()
         self.embedding = nn.Embedding(
             num_embeddings=vocab_size,
@@ -191,6 +194,7 @@ class TokenEncoder(nn.Module):
         )
 
     def forward(self, src_ids, src_lengths):
+        """输入源句子 id 和真实长度，输出每个 token 位置的 LSTM output 序列 [B, T, H]。"""
         embedded = self.embedding(src_ids)
         packed_embedded = pack_padded_sequence(
             input=embedded,
@@ -216,9 +220,10 @@ class TokenAttentionDecoder(nn.Module):
         输出 logits [B, T_tgt, vocab_size]。
     """
 
-    def __init__(self, vocab_size, embed_dim, hidden_dim, num_layers=1, pad_idx=0,attention_hdim=128):
+    def __init__(self, vocab_size, embed_dim, hidden_dim, num_layers=1, pad_idx=0, attention_hdim=128):
+        """定义 embedding、attention、LSTM（输入拼了 context 所以是 embed_dim+hidden_dim）和输出层。"""
         super().__init__()
-        
+
         self.embedding = nn.Embedding(
             num_embeddings=vocab_size,
             embedding_dim=embed_dim,
@@ -233,14 +238,16 @@ class TokenAttentionDecoder(nn.Module):
         self.attention = AdditiveAttention(hidden_dim, hidden_dim, attention_hdim)
         self.fc = nn.Linear(hidden_dim, vocab_size)
 
-    def init_state(self,batch_size,device):
+    def init_state(self, batch_size, device):
+        """初始化 decoder LSTM 的 hidden/cell 为全零（attention 取信息不靠初始状态）。"""
         L = self.lstm.num_layers
         H = self.lstm.hidden_size
         hidden = torch.zeros((L, batch_size, H), device=device)
         cell = torch.zeros((L, batch_size, H), device=device)
         return (hidden, cell)
 
-    def step(self, input_ids,hidden,cell, received_outputs, src_mask):
+    def step(self, input_ids, hidden, cell, received_outputs, src_mask):
+        """单步解码：用上一层 hidden 作 query 从接收序列取 context，拼 embedding 喂 LSTM，输出当前 logits。"""
         queries = hidden[-1]
         embedded = self.embedding(input_ids)
         context = self.attention(received_outputs, received_outputs,queries,src_mask)
@@ -288,6 +295,7 @@ class TokenSeq2Seq(nn.Module):
     """
 
     def __init__(self, encoder, decoder, channel=None, channel_dim=128):
+        """组合 token 级 encoder/decoder，并建立逐 token 的信道编解码线性层。"""
         super().__init__()
         self.encoder = encoder
         self.decoder = decoder
@@ -296,12 +304,10 @@ class TokenSeq2Seq(nn.Module):
         self.channel_encoder = nn.Linear(state_dim, channel_dim)
         self.channel_decoder = nn.Linear(channel_dim, state_dim)
 
-    
-
-    def transmit_tokens(self, encoder_outputs, mask,snr_db=None):
+    def transmit_tokens(self, encoder_outputs, mask, snr_db=None):
         """把 encoder_outputs [B,T,H] 逐 token 送过信道。"""
         channel_symbols = self.channel_encoder(encoder_outputs)
-        channel_norm = sequence_power_normalize(channel_symbols,mask)
+        channel_norm = sequence_power_normalize(channel_symbols, mask)
         if snr_db is not None:
             x = self.channel(channel_norm, snr_db)
         else:
@@ -314,7 +320,7 @@ class TokenSeq2Seq(nn.Module):
         mask = (src_ids != self.encoder.embedding.padding_idx)
         encoder_outputs = self.encoder(src_ids, src_lengths)
         if self.channel is not None:
-            received_outputs = self.transmit_tokens(encoder_outputs,mask, snr_db)
+            received_outputs = self.transmit_tokens(encoder_outputs, mask, snr_db)
         else:
             received_outputs = encoder_outputs
         decoder_input = src_ids[:, :-1]

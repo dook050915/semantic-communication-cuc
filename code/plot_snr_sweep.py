@@ -13,6 +13,7 @@ OLD_TOKEN_C256_A128 = {
 
 
 def load_snr_results(path):
+    """读取 sweep.py 生成的 "SNR | Loss | BLEU" 表格文件，解析成 {snr, loss, bleu} 字典。"""
     snrs, test_losses, bleus = [], [], []
     with open(resolve_path(path), "r", encoding="utf-8") as f:
         for line_no, line in enumerate(f):
@@ -26,6 +27,10 @@ def load_snr_results(path):
 
 
 def plot_loss_bleu(series, title, save_path):
+    """把多条曲线画成左 Loss-SNR、右 BLEU-SNR 的并排子图并存盘。
+
+    series: List[dict]，每条含 label / data({snr,loss,bleu}) 和可选 marker / color / linestyle。
+    """
     fig, axs = plt.subplots(1, 2, figsize=(10, 4), sharex=True)
 
     for item in series:
@@ -69,6 +74,7 @@ def plot_loss_bleu(series, title, save_path):
 
 
 def main():
+    """读取各实验目录的 sweep 结果，画出全部对比图（信道维度消融、粒度对比、AWGN vs Rayleigh 等）。"""
     awgn_base = Path("experiments/lstm/awgn/real_channel")
     awgn_token_base = awgn_base / "tokenSeq2Seq"
     awgn_state_base = awgn_base / "stateSeq2Seq"

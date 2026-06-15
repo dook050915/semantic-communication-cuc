@@ -25,6 +25,7 @@ def compute_bleu(references, predictions):
     return bleu.score / 100.0
 
 def save_results(results, path):
+    """把评测结果字典存成 json 文件（自动建目录）。"""
     dirname = os.path.dirname(path)
     if dirname:
         os.makedirs(dirname, exist_ok=True)
@@ -39,6 +40,7 @@ def save_results(results, path):
 
 
 def save_predictions(references, predictions, path, max_samples=1000000):
+    """把 reference/prediction 成对写入文本文件，最多写 max_samples 条，便于人工抽查译文。"""
     assert len(references) == len(predictions)
     dirname = os.path.dirname(path)
     if dirname:
@@ -53,6 +55,7 @@ def save_predictions(references, predictions, path, max_samples=1000000):
     print(f"predictions saved to {path} with {count} samples")
 
 def main():
+    """SNR sweep 入口：固定 best checkpoint，扫一串 SNR，逐点算 test loss + BLEU 写成表格文件。"""
     device = get_device()
     eval_config = config.copy()
     set_seed(eval_config["seed"])
@@ -63,11 +66,9 @@ def main():
         channel = channel_types[eval_config["channel_type"]]()
     else:
         channel = None
-    
+
     sentences = load_training_sentences(eval_config)
     train_sentences, val_sentences, test_sentences = split_sentences(sentences, train_ratio=eval_config["train_ratio"], val_ratio=eval_config["val_ratio"], seed=eval_config["seed"])
-
-
 
     vocab_path = resolve_path(eval_config["vocab_path"])
     word2idx, idx2word = load_vocab(str(vocab_path))
@@ -93,10 +94,10 @@ def main():
         f.write("SNR(dB) | Test Loss | BLEU\n")
         for snr in snrs:
             eval_config["snr_db"] = snr
-            test_loss = evaluate_loss(model, test_loader, criterion, device,snr_db=eval_config["snr_db"])
+            test_loss = evaluate_loss(model, test_loader, criterion, device, snr_db=eval_config["snr_db"])
 
-            predictions = Predict[eval_config["Predict"]](model, test_loader,  word2idx, idx2word, max_len=eval_config["max_len"]+2, snr_db=eval_config["snr_db"])
-            
+            predictions = Predict[eval_config["Predict"]](model, test_loader, word2idx, idx2word, max_len=eval_config["max_len"]+2, snr_db=eval_config["snr_db"])
+
             test_bleu = compute_bleu(test_sentences, predictions)
             print(f"test_loss: {test_loss:.4f}")
             print(f"test_bleu: {test_bleu:.4f}")

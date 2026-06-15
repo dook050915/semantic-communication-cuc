@@ -20,7 +20,7 @@ def get_device():
     return torch.device("cpu")
 
 
-def train_one_epoch(model, loader, criterion, optimizer, device, snr_db=None,snr_list=None):
+def train_one_epoch(model, loader, criterion, optimizer, device, snr_db=None, snr_list=None):
     """训练一个 epoch：前向、算 loss、反向传播、更新参数。
 
     batch_ids: [batch_size, seq_len]
@@ -102,14 +102,13 @@ def greedy_decode(model, sentence, word2idx, idx2word, max_len=32, snr_db=None):
     with torch.no_grad():
         hidden, cell = model.encoder(src_ids, src_lengths)
         if model.channel is not None:
-            hidden,cell = model.transmit(hidden, cell, snr_db=snr_db)
+            hidden, cell = model.transmit(hidden, cell, snr_db=snr_db)
         decoder_input = torch.tensor(
             [[word2idx["<SOS>"]]], dtype=torch.long, device=device
         )
         generated_ids = []
 
         for _ in range(max_len):
-            
             logits, (hidden, cell) = model.decoder(decoder_input, hidden, cell)
             next_id = logits[:, -1, :].argmax().item()
 
@@ -122,32 +121,38 @@ def greedy_decode(model, sentence, word2idx, idx2word, max_len=32, snr_db=None):
     return decode(generated_ids, idx2word)
 
 def greedy_decode_batch(model, loader, word2idx, idx2word, max_len=32, snr_db=None):
+    """整句版（Seq2Seq）的 batch 贪心解码：整个 test_loader 一次性推理，返回预测句子列表。
+
+    和单句版 greedy_decode 的区别：一次处理一个 batch，用 finished 掩码记录哪些句子已生成 <EOS>，
+    全部 finished 时提前停。返回 List[str]。
+    """
     model.eval()
     device = next(model.parameters()).device
     all_preds = []
     with torch.no_grad():
-        for src_ids, lengths in loader:          
+        for src_ids, lengths in loader:
             src_ids = src_ids.to(device)
             lengths = lengths.cpu()
             hidden, cell = model.encoder(src_ids, lengths)
             if model.channel is not None:
-                hidden,cell = model.transmit(hidden, cell, snr_db=snr_db)
-            decoder_input = torch.full((src_ids.shape[0],1), word2idx["<SOS>"], dtype=torch.long, device=device)
+                hidden, cell = model.transmit(hidden, cell, snr_db=snr_db)
+            decoder_input = torch.full((src_ids.shape[0], 1), word2idx["<SOS>"], dtype=torch.long, device=device)
             finished = torch.tensor([False]*src_ids.shape[0], dtype=torch.bool, device=device)
             generated_ids = torch.zeros((src_ids.shape[0], max_len), dtype=torch.long, device=device)
             for i in range(max_len):
                 logits, (hidden, cell) = model.decoder(decoder_input, hidden, cell)
                 next_ids = logits[:, -1, :].argmax(dim=1)
-                finished |=(next_ids==word2idx["<EOS>"])
+                finished |= (next_ids == word2idx["<EOS>"])
                 if finished.all():
                     break
                 decoder_input = next_ids.unsqueeze(1)
                 generated_ids[:, i] = next_ids
             for gen_id in generated_ids:
                 all_preds.append(decode(gen_id, idx2word))
-        
+
     return all_preds
-            
+
+
 def greedy_decode_token(model, sentence, word2idx, idx2word, max_len=32, snr_db=None):
     """用贪心策略推理：每一步选择概率最高的 token 作为下一个词。
 
@@ -167,19 +172,18 @@ def greedy_decode_token(model, sentence, word2idx, idx2word, max_len=32, snr_db=
     ids = encode(sentence, word2idx)
     src_lengths = torch.tensor([len(ids)], dtype=torch.long).cpu()
     src_ids = torch.tensor(ids, dtype=torch.long).unsqueeze(0).to(device)
-    mask = (src_ids!=word2idx["<PAD>"])
+    mask = (src_ids != word2idx["<PAD>"])
     with torch.no_grad():
         outputs = model.encoder(src_ids, src_lengths)
         if model.channel is not None:
-            outputs = model.transmit_tokens(outputs,mask,     snr_db=snr_db,)
+            outputs = model.transmit_tokens(outputs, mask, snr_db=snr_db)
         decoder_input = torch.tensor(
             [[word2idx["<SOS>"]]], dtype=torch.long, device=device
         )
         generated_ids = []
         hidden, cell = model.decoder.init_state(1, device)
-        
-        for _ in range(max_len):
 
+        for _ in range(max_len):
             logits, (hidden, cell) = model.decoder.step(decoder_input, hidden, cell, outputs, mask)
             next_id = logits[:, -1, :].argmax().item()
             if next_id == word2idx["<EOS>"]:
@@ -191,33 +195,38 @@ def greedy_decode_token(model, sentence, word2idx, idx2word, max_len=32, snr_db=
     return decode(generated_ids, idx2word)
 
 def greedy_decode_batch_token(model, loader, word2idx, idx2word, max_len=32, snr_db=None):
+    """token 版（TokenSeq2Seq）的 batch 贪心解码：逐 token 过信道 + attention 解码，整批一次推理。
+
+    和 greedy_decode_batch 的区别：encoder 输出整条序列、走 transmit_tokens（带 mask 的逐 token 信道），
+    decoder 用 step + attention 从接收序列取 context。返回 List[str]。
+    """
     model.eval()
     device = next(model.parameters()).device
     all_preds = []
     with torch.no_grad():
-        for src_ids, lengths in loader:          
+        for src_ids, lengths in loader:
             src_ids = src_ids.to(device)
             lengths = lengths.cpu()
-            mask = (src_ids!=word2idx["<PAD>"])
+            mask = (src_ids != word2idx["<PAD>"])
             outputs = model.encoder(src_ids, lengths)
-            hidden,cell = model.decoder.init_state(src_ids.shape[0], device)
+            hidden, cell = model.decoder.init_state(src_ids.shape[0], device)
             if model.channel is not None:
-                outputs = model.transmit_tokens(outputs,mask,    snr_db=snr_db)
-            decoder_input = torch.full((src_ids.shape[0],1), word2idx["<SOS>"], dtype=torch.long, device=device)
+                outputs = model.transmit_tokens(outputs, mask, snr_db=snr_db)
+            decoder_input = torch.full((src_ids.shape[0], 1), word2idx["<SOS>"], dtype=torch.long, device=device)
             finished = torch.tensor([False]*src_ids.shape[0], dtype=torch.bool, device=device)
             generated_ids = torch.full((src_ids.shape[0], max_len), word2idx["<PAD>"], dtype=torch.long, device=device)
-            
+
             for i in range(max_len):
                 logits, (hidden, cell) = model.decoder.step(decoder_input, hidden, cell, outputs, mask)
                 next_ids = logits[:, -1, :].argmax(dim=1)
-                finished |=(next_ids==word2idx["<EOS>"])
+                finished |= (next_ids == word2idx["<EOS>"])
                 if finished.all():
                     break
                 decoder_input = next_ids.unsqueeze(1)
                 generated_ids[:, i] = next_ids
             for gen_id in generated_ids:
                 all_preds.append(decode(gen_id, idx2word))
-        
+
     return all_preds
 
 
