@@ -60,7 +60,7 @@ def main():
     eval_config = config.copy()
     set_seed(eval_config["seed"])
     eval_config["Predict"] = "predict_transformer_batch"
-    eval_config['results_path'] = "experiments/transformer/AWGN/multi_snr_50k_d128_h8_L3_drop0_lr5e4_warmup10/snr_sweep_results.txt"
+    eval_config['results_path'] = "experiments/transformer/AWGN/multi_snr_200k_d256_h8_L3_drop1_lr5e4_warmup10/snr_sweep_results.txt"
 
     if eval_config["use_channel"]:
         channel = channel_types[eval_config["channel_type"]]()

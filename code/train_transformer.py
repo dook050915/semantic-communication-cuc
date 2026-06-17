@@ -30,15 +30,15 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 config = {
     "seed": 42,
-    "data_path": "data/processed/europarl_en_50k.txt",
+    "data_path": "data/processed/europarl_en_200k.txt",
     "raw_data_dir": "data/raw/europarl-v7/txt/en",
-    "max_sentences": 50000,
+    "max_sentences": 200000,
     "min_len": 4,
     "max_len": 30,
     "min_freq": 2,
     "train_ratio": 0.8,
     "val_ratio": 0.1,
-    "embed_dim": 128,
+    "embed_dim": 256,
     "hidden_dim": 512,
     "channel_dim": 256,
     "num_layers": 3,
@@ -47,8 +47,8 @@ config = {
     "lr": 5e-4,
     "warmup_ratio": 0.1,
     "grad_clip": 1.0,
-    "epochs": 40,
-    "dropout": 0.0,
+    "epochs": 30,
+    "dropout": 0.1,
     "use_channel":True,
     "channel_type":"AWGN",
     "encoder":"TransformerEncoder",
@@ -57,9 +57,9 @@ config = {
     "model":"TransformerSeq2Seq",
     "snr_db":10,
     "snr_list":[-10, -5, 0, 5, 10, 15, 20],
-    "vocab_path": "experiments/transformer/AWGN/multi_snr_50k_d128_h8_L3_drop0_lr5e4_warmup10/vocab.json",
-    "checkpoint_path": "experiments/transformer/AWGN/multi_snr_50k_d128_h8_L3_drop0_lr5e4_warmup10/checkpoint_epoch40.pt",
-    "best_checkpoint_path": "experiments/transformer/AWGN/multi_snr_50k_d128_h8_L3_drop0_lr5e4_warmup10/checkpoint_best.pt",
+    "vocab_path": "experiments/transformer/AWGN/multi_snr_200k_d256_h8_L3_drop1_lr5e4_warmup10/vocab.json",
+    "checkpoint_path": "experiments/transformer/AWGN/multi_snr_200k_d256_h8_L3_drop1_lr5e4_warmup10/checkpoint_epoch30.pt",
+    "best_checkpoint_path": "experiments/transformer/AWGN/multi_snr_200k_d256_h8_L3_drop1_lr5e4_warmup10/checkpoint_best.pt",
 }
 
 
