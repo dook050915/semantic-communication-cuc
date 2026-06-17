@@ -10,7 +10,7 @@ from data_utils import (
     split_sentences,
 )
 from model import Encoders, Decoders, Models
-from train_lstm import config, load_training_sentences, resolve_path
+from train_transformer import config, load_training_sentences, resolve_path
 from train_utils import evaluate_loss, Predict, load_checkpoint, get_device, set_seed
 from channel import channel_types
 
@@ -59,8 +59,8 @@ def main():
     device = get_device()
     eval_config = config.copy()
     set_seed(eval_config["seed"])
-    eval_config["Predict"] = "predict_token_batch"
-    eval_config['results_path'] = "experiments/lstm/Rayleigh/tokenSeq2Seq/multi_snr_50k_h512_c256_a128/snr_sweep_results.txt"
+    eval_config["Predict"] = "predict_transformer_batch"
+    eval_config['results_path'] = "experiments/transformer/AWGN/multi_snr_50k_d128_h8_L3_drop0/snr_sweep_results.txt"
 
     if eval_config["use_channel"]:
         channel = channel_types[eval_config["channel_type"]]()
@@ -78,9 +78,25 @@ def main():
     test_dataset = TextDataset(test_sentences, word2idx)
     test_loader = DataLoader(test_dataset, batch_size=eval_config["batch_size"], shuffle=False, collate_fn=collate_fn)
 
-    encoder = Encoders[eval_config["encoder"]](vocab_size, eval_config["embed_dim"], eval_config["hidden_dim"], eval_config["num_layers"], pad_idx)
+    encoder = Encoders[eval_config["encoder"]](
+        vocab_size=vocab_size,
+        embed_dim=eval_config["embed_dim"],
+        hidden_dim=eval_config["hidden_dim"],
+        num_layers=eval_config["num_layers"],
+        pad_idx=pad_idx,
+        nhead=eval_config["nhead"],
+        dropout=eval_config["dropout"],
+    )
 
-    decoder = Decoders[eval_config["decoder"]](vocab_size, eval_config["embed_dim"], eval_config["hidden_dim"], eval_config["num_layers"], pad_idx, eval_config["attention_hdim"])
+    decoder = Decoders[eval_config["decoder"]](
+        vocab_size=vocab_size,
+        embed_dim=eval_config["embed_dim"],
+        hidden_dim=eval_config["hidden_dim"],
+        num_layers=eval_config["num_layers"],
+        pad_idx=pad_idx,
+        nhead=eval_config["nhead"],
+        dropout=eval_config["dropout"],
+    )
 
     model = Models[eval_config["model"]](encoder, decoder, channel, eval_config["channel_dim"])
     model.to(device)

@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from channel import power_normalize, sequence_power_normalize
-
+import math
 class Encoder(nn.Module):
     """LSTM Encoder：把输入句子编码成 hidden/cell 语义状态。"""
 
@@ -327,13 +327,176 @@ class TokenSeq2Seq(nn.Module):
         decoder_target = src_ids[:, 1:]
         logits = self.decoder(decoder_input, received_outputs, mask)
 
-        return logits, decoder_target
+        return logits,decoder_target
 
-Encoders = {"TokenEncoder":TokenEncoder,
-            "Encoder":Encoder}
+class PositionalEncoding(nn.Module):
+    """给 Transformer token embedding 加正弦位置编码。
 
-Decoders = {"TokenAttentionDecoder":TokenAttentionDecoder,
-            "Decoder":Decoder}
+    输入:
+        x: [B, T, d_model]
+    输出:
+        x: [B, T, d_model]
+    """
 
-Models = {"TokenSeq2Seq":TokenSeq2Seq,
-            "Seq2Seq":Seq2Seq}
+    def __init__(self, d_model, max_len=512):
+        super().__init__()
+        pe = torch.zeros(max_len, d_model)
+        position = torch.arange(max_len,dtype=torch.float).unsqueeze(1)
+        div_term = torch.exp(torch.arange(0, d_model, 2,dtype=torch.float) * (-math.log(10000.0)/ d_model))
+        pe[:,0::2] = torch.sin(position * div_term)
+        pe[:,1::2] = torch.cos(position * div_term)
+        pe = pe.unsqueeze(0)
+        self.register_buffer("pe", pe)
+    def forward(self, x):
+        T = x.size(1)
+        x = x + self.pe[:, :T, :]
+        return x
+
+class TransformerEncoder(nn.Module):
+    """Transformer Encoder: token ids -> contextual token representations.
+    输入:
+        src_ids: [B, T]
+        src_lengths: [B]，为了兼容旧训练循环，当前不使用
+    输出:
+        encoder_outputs: [B, T, d_model]
+    """
+    def __init__(
+        self,
+        vocab_size,
+        embed_dim,
+        hidden_dim,
+        num_layers=3,
+        pad_idx=0,
+        nhead=8,
+        dropout=0.1,
+        max_len=512,
+    ):
+        super().__init__()
+        self.pad_idx = pad_idx
+        self.d_model = embed_dim
+        assert self.d_model % nhead == 0
+        self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=self.pad_idx)
+        self.pos = PositionalEncoding(self.d_model, max_len)
+        encoder_layer = nn.TransformerEncoderLayer(
+            d_model=self.d_model,
+            nhead=nhead,
+            dim_feedforward=hidden_dim,
+            dropout=dropout,
+            batch_first=True,
+        )
+        self.dropout = nn.Dropout(dropout)
+        self.transformer_encoder = nn.TransformerEncoder(encoder_layer, num_layers, enable_nested_tensor=False)
+
+    def forward(self, src_ids, src_lengths=None):
+        src_key_padding_mask = (src_ids == self.pad_idx)
+        x = self.embedding(src_ids)*math.sqrt(self.d_model)
+        x = self.pos(x)
+        x = self.dropout(x)
+        encoder_outputs = self.transformer_encoder(x, src_key_padding_mask=src_key_padding_mask)
+        return encoder_outputs
+
+class TransformerDecoder(nn.Module):
+    """Transformer Decoder: prefix tokens + memory -> vocab logits.
+
+    输入:
+        tgt_input_ids: [B, T_tgt]
+        received_outputs: [B, T_src, d_model]
+        src_mask: [B, T_src],True=真实 token,False=PAD
+    输出:
+        logits: [B, T_tgt, vocab_size]
+    """
+
+    def __init__(
+        self,
+        vocab_size,
+        embed_dim,
+        hidden_dim,
+        num_layers=3,
+        pad_idx=0,
+        nhead=8,
+        dropout=0.1,
+        max_len=512,
+    ):
+        super().__init__()
+        self.pad_idx = pad_idx
+        self.d_model = embed_dim
+        assert self.d_model % nhead == 0
+        self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=self.pad_idx)
+        self.pos = PositionalEncoding(self.d_model, max_len)
+        decoder_layer = nn.TransformerDecoderLayer(
+            d_model=self.d_model,
+            nhead=nhead,
+            dim_feedforward=hidden_dim,
+            dropout=dropout,
+            batch_first=True,
+        )
+        self.transformer_decoder = nn.TransformerDecoder(decoder_layer, num_layers)
+        self.dropout = nn.Dropout(dropout)
+        self.fc = nn.Linear(self.d_model, vocab_size)
+
+    def forward(self, tgt_input_ids, received_outputs, src_mask):
+        tgt_key_padding_mask = (tgt_input_ids == self.pad_idx)
+        memory_key_padding_mask = ~src_mask
+        T = tgt_input_ids.size(1)
+        tgt_causal_mask = torch.triu(torch.ones(T, T, device=tgt_input_ids.device, dtype=torch.bool), diagonal=1)
+        tgt_input = self.embedding(tgt_input_ids)*math.sqrt(self.d_model)
+        tgt_input = self.pos(tgt_input)
+        tgt_input = self.dropout(tgt_input)
+        tgt_output = self.transformer_decoder(
+            tgt=tgt_input,
+            memory=received_outputs,
+            tgt_mask=tgt_causal_mask,
+            tgt_key_padding_mask=tgt_key_padding_mask,
+            memory_key_padding_mask=memory_key_padding_mask,
+        )
+        logits = self.fc(tgt_output)
+        return logits
+
+class TransformerSeq2Seq(nn.Module):
+    def __init__(self, encoder, decoder, channel=None, channel_dim=128):
+        super().__init__()
+        self.encoder = encoder
+        self.decoder = decoder
+        self.channel = channel
+        d_model = encoder.d_model
+        self.channel_encoder = nn.Linear(d_model, channel_dim)
+        self.channel_decoder = nn.Linear(channel_dim, d_model)
+
+    def transmit_tokens(self, encoder_outputs, mask, snr_db=None):
+        """把 encoder_outputs [B,T,d_model] 逐 token 送过信道。"""
+        channel_symbols = self.channel_encoder(encoder_outputs)
+        channel_norm = sequence_power_normalize(channel_symbols, mask)
+        if snr_db is not None:
+            x = self.channel(channel_norm, snr_db)
+        else:
+            x = channel_norm
+        received_outputs = self.channel_decoder(x)
+        return received_outputs
+
+    def forward(self, src_ids, src_lengths, snr_db=None):
+        """使用 teacher forcing 的训练前向传播。"""
+        mask = (src_ids != self.encoder.pad_idx)
+        encoder_outputs = self.encoder(src_ids, src_lengths)
+        if self.channel is not None:
+            received_outputs = self.transmit_tokens(encoder_outputs, mask, snr_db)
+        else:
+            received_outputs = encoder_outputs
+        decoder_input = src_ids[:, :-1]
+        decoder_target = src_ids[:, 1:]
+        logits = self.decoder(decoder_input, received_outputs, mask)
+        return logits,decoder_target
+
+Encoders = {
+    "TransformerEncoder":TransformerEncoder,
+    "TokenEncoder":TokenEncoder,
+    "Encoder":Encoder}
+
+Decoders = {
+    "TransformerDecoder":TransformerDecoder,
+    "TokenAttentionDecoder":TokenAttentionDecoder,
+    "Decoder":Decoder}
+
+Models = {
+    "TransformerSeq2Seq":TransformerSeq2Seq,
+    "TokenSeq2Seq":TokenSeq2Seq,
+    "Seq2Seq":Seq2Seq}
