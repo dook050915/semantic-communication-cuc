@@ -20,7 +20,7 @@ def get_device():
     return torch.device("cpu")
 
 
-def train_one_epoch(model, loader, criterion, optimizer, device, snr_db=None, snr_list=None):
+def train_one_epoch(model, loader, criterion, optimizer, device, snr_db=None, snr_list=None, scheduler=None, grad_clip=None):
     """训练一个 epoch：前向、算 loss、反向传播、更新参数。
 
     batch_ids: [batch_size, seq_len]
@@ -48,8 +48,12 @@ def train_one_epoch(model, loader, criterion, optimizer, device, snr_db=None, sn
 
         loss = criterion(logits_flat, target_flat)
         loss.backward()
-        optimizer.step()
+        if grad_clip is not None:
+            torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
 
+        optimizer.step()
+        if scheduler is not None:
+            scheduler.step()
         total_loss += loss.item()
 
     return total_loss / len(loader)

@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from channel import channel_types
-
+import math
 from data_utils import (
     TextDataset,
     build_vocab,
@@ -44,7 +44,9 @@ config = {
     "num_layers": 3,
     "nhead": 8,
     "batch_size": 96,
-    "lr": 1e-4,
+    "lr": 5e-4,
+    "warmup_ratio": 0.1,
+    "grad_clip": 1.0,
     "epochs": 40,
     "dropout": 0.0,
     "use_channel":True,
@@ -55,9 +57,9 @@ config = {
     "model":"TransformerSeq2Seq",
     "snr_db":10,
     "snr_list":[-10, -5, 0, 5, 10, 15, 20],
-    "vocab_path": "experiments/transformer/AWGN/multi_snr_50k_d128_h8_L3_drop0/vocab.json",
-    "checkpoint_path": "experiments/transformer/AWGN/multi_snr_50k_d128_h8_L3_drop0/checkpoint_epoch40.pt",
-    "best_checkpoint_path": "experiments/transformer/AWGN/multi_snr_50k_d128_h8_L3_drop0/checkpoint_best.pt",
+    "vocab_path": "experiments/transformer/AWGN/multi_snr_50k_d128_h8_L3_drop0_lr5e4_warmup10/vocab.json",
+    "checkpoint_path": "experiments/transformer/AWGN/multi_snr_50k_d128_h8_L3_drop0_lr5e4_warmup10/checkpoint_epoch40.pt",
+    "best_checkpoint_path": "experiments/transformer/AWGN/multi_snr_50k_d128_h8_L3_drop0_lr5e4_warmup10/checkpoint_best.pt",
 }
 
 
@@ -158,12 +160,23 @@ def main():
 
     criterion = nn.CrossEntropyLoss(ignore_index=pad_idx)
     optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"])
+    total_steps = config["epochs"] * len(train_loader)
+    warmup_steps = int(config["warmup_ratio"] * total_steps)
+
+    def lr_lambda(step):
+        if step < warmup_steps:
+            return step / max(1, warmup_steps)
+
+        progress = (step - warmup_steps) / max(1, total_steps - warmup_steps)
+        return 0.5 * (1.0 + math.cos(math.pi * progress))
+
+    scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda)
 
     best_val_loss = float("inf")
     best_checkpoint_path = resolve_path(config["best_checkpoint_path"])
 
     for epoch in range(config["epochs"]):
-        train_loss = train_one_epoch(model, train_loader, criterion, optimizer, device,config["snr_db"],config["snr_list"])
+        train_loss = train_one_epoch(model, train_loader, criterion, optimizer, device,config["snr_db"],config["snr_list"], scheduler, config["grad_clip"])
         val_loss = evaluate_loss(model, val_loader, criterion, device,config["snr_db"])
 
         if val_loss < best_val_loss:
