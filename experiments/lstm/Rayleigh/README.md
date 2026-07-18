@@ -44,7 +44,7 @@ BLEU:sacrebleu(corpus 级,tokenize=none),取值 0–1
 
 ## 结果
 
-结果文件见 [multi_snr_50k_h512_c256/](./multi_snr_50k_h512_c256/)。
+结果文件见 [stateSeq2Seq/multi_snr_50k_h512_c256/](./stateSeq2Seq/multi_snr_50k_h512_c256/)。
 
 ```text
 SNR(dB) | Test Loss | BLEU
