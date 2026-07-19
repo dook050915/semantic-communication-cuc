@@ -5,9 +5,10 @@
 ## 配置
 
 - 模型:Transformer 编码器/解码器,d_model = 128 / 256,3 层,8 头,正弦位置编码,因果 + 填充双掩码
-- 训练 recipe:warmup(约 10% steps)+ cosine 衰减,峰值 lr 5e-4,grad_clip 1.0,batch 96;50k 用 dropout 0,110k 用 dropout 0.1 + label smoothing 0.1
+- 训练 recipe:warmup(约 10% steps)+ cosine 衰减,峰值 lr 5e-4,grad_clip 1.0,batch 96;50k 用 dropout 0、40 epochs,110k 用 dropout 0.1、30 epochs
 - 信道:AWGN / 瑞利,channel_dim = 256(及 16),多 SNR 随机训练 [-10, 20] dB
-- 数据:Europarl 50k 与 110k
+- 数据:Europarl 50k 与实际 110,844 句的扩展集(目录沿用 `200k` 命名)
+- 损失:两组均为 `CrossEntropyLoss(ignore_index=pad_idx)`;当前代码**未启用 label smoothing**
 
 ## 结果(AWGN,channel_dim=256)
 
@@ -15,14 +16,14 @@
 |---|---|---|---|---|---|
 | LSTM (50k) | 0.159 | 0.621 | 0.830 | 0.867 | 0.870 |
 | Transformer d256 (50k) | 0.283 | 0.443 | 0.508 | 0.538 | 0.539 |
-| Transformer d256 (110k) | 0.279 | 0.390 | 0.431 | 0.450 | 0.452 |
+| Transformer d256 (110k,探索性) | 0.279 | 0.390 | 0.431 | 0.450 | 0.452 |
 
 ## 结论
 
-- **−10 dB 时 Transformer 更高**(0.283 / 0.279 vs 0.159);从 **−5 dB 开始 LSTM 明显领先**(−5 dB 为 0.621 vs 0.443 / 0.390,高 SNR 约为 0.87 vs 0.54 / 0.45)。
-- **Transformer 的 BLEU-SNR 曲线偏平**(几乎不随信道质量变),而 LSTM 很陡。指向:**Transformer 解码器作为强语言模型,更多依赖语言先验、而非充分利用过信道的语义信号**,曲线被先验限制在 ~0.45–0.54;LSTM 解码器更依赖信道,高 SNR 才能冲高。
-- **更多数据 + 正则(50k→110k)缓解了过拟合(train/val gap 1.36→~0.6),但天花板未升**(高 SNR 仍 ~0.45)→ 瓶颈是**架构层面的解码行为,不是数据量/过拟合**。
-- no-channel 自编码对照(train 0.21 / val 1.26)确认非实现 bug:模型能学但泛化受限。
+- **严格同口径的 50k 对比**:−10 dB 时 Transformer 更高(0.283 vs 0.159);从 −5 dB 开始 LSTM 明显领先(−5 dB 为 0.621 vs 0.443,20 dB 为 0.870 vs 0.539)。
+- **曲线形态**:Transformer 50k 的 BLEU-SNR 曲线明显比 LSTM 平。解码器语言先验较强、信道表征利用不足是候选解释,仍需通过 memory/接收序列遮蔽等消融验证。
+- **110k 复跑不能解释数据量效应**:它同时改变了词表(16,471→25,826)、dropout(0→0.1)、训练轮数(40→30)和数据划分;最优 val loss 还出现在最后一轮。因此不能将较低 BLEU 归因于“文本更多”。
+- **no-channel 仅是 sanity check**:它说明模型在无信道条件下能够优化但泛化较弱,不能单独证明信道实现无误或根因已经确定。
 - 完整分析见根目录 README「核心结果 2」与「踩过的坑」。
 
 ## Transformer 特有的坑(详见根 README)
