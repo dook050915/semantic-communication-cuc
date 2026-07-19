@@ -6,13 +6,13 @@
 
 ## 核心结果
 
-### 1. 逐 token LSTM:语义恢复随 SNR 优雅退化
+### 1. 逐 token LSTM:语义恢复性能随 SNR 降低逐步下降
 
 Europarl 50k、hidden=512、channel_dim=256、多 SNR 随机训练,逐 token 传输 + 加性注意力,BLEU(sacrebleu,0–1):
 
-| SNR (dB) | -10 | -5 | 0 | 5 | 10 | 15 | 20 |
-|---|---|---|---|---|---|---|---|
-| AWGN | 0.159 | 0.621 | 0.830 | 0.862 | 0.867 | 0.868 | 0.870 |
+| SNR (dB) | -10   | -5    | 0     | 5     | 10    | 15    | 20    |
+| -------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| AWGN     | 0.159 | 0.621 | 0.830 | 0.862 | 0.867 | 0.868 | 0.870 |
 | Rayleigh | 0.076 | 0.162 | 0.365 | 0.615 | 0.753 | 0.802 | 0.816 |
 
 - 两条曲线随 SNR 单调上升、高 SNR 饱和:端到端系统学到了「信道质量 ↑ → 语义恢复 ↑」。
@@ -23,10 +23,10 @@ Europarl 50k、hidden=512、channel_dim=256、多 SNR 随机训练,逐 token 传
 
 主比较固定 Europarl 50k、AWGN、channel_dim=256,用逐 token LSTM(hidden=512)对比 Transformer(d_model=256、3 层、8 头)。表中同时保留 110k 探索性复跑用于审计,但不用于判断“增加数据量是否提升性能”:
 
-| SNR (dB) | -10 | -5 | 0 | 10 | 20 |
-|---|---|---|---|---|---|
-| LSTM (50k) | 0.159 | 0.621 | 0.830 | 0.867 | 0.870 |
-| Transformer d256 (50k) | 0.283 | 0.443 | 0.508 | 0.538 | 0.539 |
+| SNR (dB)                       | -10   | -5    | 0     | 10    | 20    |
+| ------------------------------ | ----- | ----- | ----- | ----- | ----- |
+| LSTM (50k)                     | 0.159 | 0.621 | 0.830 | 0.867 | 0.870 |
+| Transformer d256 (50k)         | 0.283 | 0.443 | 0.508 | 0.538 | 0.539 |
 | Transformer d256 (110k,探索性) | 0.279 | 0.390 | 0.431 | 0.450 | 0.452 |
 
 - **严格同口径的 50k 对比**:−10 dB 时 Transformer 更高(0.283 vs 0.159);从 −5 dB 开始 LSTM 明显领先(−5 dB 为 0.621 vs 0.443,20 dB 为 0.870 vs 0.539)。
@@ -60,7 +60,7 @@ LSTM 与 Transformer **复用同一条信道链**(channel encoder/decoder + 功�
 - `experiments/lstm/awgn/{hidden_only,hidden_cell}/` — 早期状态加噪敏感性分析(固定 vs 多 SNR;hidden vs hidden+cell)
 - `experiments/lstm/awgn/real_channel/` — 真信道 + 功率归一化,channel_dim 消融(16–512),整句版与逐 token 版
 - `experiments/lstm/Rayleigh/` — 平坦瑞利 + 完美 CSI 均衡,与 AWGN 同配置对比
-- `experiments/transformer/{AWGN,Rayleigh}/` — Transformer 版,与 LSTM 同信道链对比
+- `experiments/transformer/{AWGN,Rayleigh}/` — Transformer 版 AWGN/Rayleigh 实验
 
 每组实验的设置、结果、失败样例与结论见对应目录的 README。
 
@@ -114,14 +114,14 @@ BLEU 用 sacrebleu(corpus 级,tokenize=none),取值 0–1。
 
 ## 路线
 
-| 阶段 | 内容 | 状态 |
-|---|---|---|
-| 1. LSTM baseline(无信道) | Seq2Seq 自编码,端到端重建,BLEU 评估 | 完成 |
-| 2. LSTM + AWGN 信道 | 状态加噪分析 → 真信道 + 功率归一化;SNR 扫描、channel_dim 消融 | 完成 |
-| 3. 瑞利衰落信道 | 平坦瑞利 + 完美 CSI 均衡,与 AWGN 同配置对比 | 完成 |
-| 4. 逐 token + attention | 整句压缩 → 逐 token 传输,BLEU ~0.17 → ~0.87 | 完成 |
-| 5. Transformer 对比 | 同信道链替换编解码器,LSTM vs Transformer | 完成 |
-| 6. 更大数据探索性复跑 | 实际 110,844 句 + dropout 0.1;未启用 label smoothing,且非单变量对照 | 完成(探索性) |
+| 阶段                     | 内容                                                                | 状态         |
+| ------------------------ | ------------------------------------------------------------------- | ------------ |
+| 1. LSTM baseline(无信道) | Seq2Seq 自编码,端到端重建,BLEU 评估                                 | 完成         |
+| 2. LSTM + AWGN 信道      | 状态加噪分析 → 真信道 + 功率归一化;SNR 扫描、channel_dim 消融       | 完成         |
+| 3. 瑞利衰落信道          | 平坦瑞利 + 完美 CSI 均衡,与 AWGN 同配置对比                         | 完成         |
+| 4. 逐 token + attention  | 整句压缩 → 逐 token 传输,BLEU ~0.17 → ~0.87                         | 完成         |
+| 5. Transformer 对比      | 保持 AWGN 信道与 channel_dim=256,仅替换编解码器,LSTM vs Transformer | 完成         |
+| 6. 更大数据探索性复跑    | 实际 110,844 句 + dropout 0.1;未启用 label smoothing,且非单变量对照 | 完成(探索性) |
 
 ## 未来工作
 
@@ -134,9 +134,9 @@ BLEU 用 sacrebleu(corpus 级,tokenize=none),取值 0–1。
 
 ## 关键文献
 
-1. Xie, Qin, Li, Juang. *Deep Learning Enabled Semantic Communication Systems*. IEEE TSP 2021.(DeepSC,[精读笔记](notes/deepsc-2021.md))
-2. Farsad, Rao, Goldsmith. *Deep Learning for Joint Source-Channel Coding of Text*. ICASSP 2018.
-3. O'Shea, Hoydis. *An Introduction to Deep Learning for the Physical Layer*. IEEE TCCN 2017.([精读笔记](notes/oshea-2017.md))
+1. Xie, Qin, Li, Juang. _Deep Learning Enabled Semantic Communication Systems_. IEEE TSP 2021.(DeepSC,[精读笔记](notes/deepsc-2021.md))
+2. Farsad, Rao, Goldsmith. _Deep Learning for Joint Source-Channel Coding of Text_. ICASSP 2018.
+3. O'Shea, Hoydis. _An Introduction to Deep Learning for the Physical Layer_. IEEE TCCN 2017.([精读笔记](notes/oshea-2017.md))
 
 ## 代码结构
 
